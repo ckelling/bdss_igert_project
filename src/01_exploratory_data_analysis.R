@@ -1,6 +1,6 @@
 ###
 ### Claire Kelling
-### Spatial Modeling of Crime Code
+### Spatial Modeling of Crime
 ###
 ### Created 10/29/17 for exploratory analysis
 ### 
@@ -81,6 +81,7 @@ DetroitMap +geom_point(aes(x = Longitude, y = Latitude), data = p1_dat, colour =
 # I will try to fit a model for response time
 # first, I need to subset the data so that it does not include NA values for Total Time (most inclusive definition)
 
+#keeping the data that doesn't have NA values for the variables I am interested in
 sum(is.na(detroit_data$Total.Response.Time))/nrow(detroit_data) #5.4% of the data has NA for Total Response Time
 tot_rtime_dat <- detroit_data[!is.na(detroit_data$Total.Response.Time),]
 tot_rtime_dat <- tot_rtime_dat[!is.na(tot_rtime_dat$Priority),] #also not including rows that have NA for priority
@@ -92,16 +93,15 @@ max(tot_rtime_dat$Total.Response.Time)
 #length(which(tot_rtime_dat$Total.Response.Time>990))
 #tot_rtime_dat[which(tot_rtime_dat$Total.Response.Time>990),]
 
+#creating linear model
 lin_mod <- lm(Total.Response.Time ~ Longitude + Latitude + Priority, data = tot_rtime_dat)
-
-sum(is.na(tot_rtime_dat$Latitude))
-
 summary(lin_mod)
 res <- lin_mod$residuals
 
 #plotting the residuals spatially
-range(res)
-breaks <- seq(-85, 1000, by = 50)
-ploteqc(tot_rtime_dat, res, breaks, pch = 19)
-map("county", region = "california", add = TRUE)
-title(main = "Residuals")
+tot_rtime_dat$res <- res
+tot_rtime_dat <- as.data.frame(tot_rtime_dat)
+
+x11()
+DetroitMap +geom_point(aes(x = Longitude, y = Latitude, colour = res), data = tot_rtime_dat, size = 1 )+scale_colour_gradient()+
+  geom_polygon(data = det_bg, aes(x = long, y = lat, group = group),colour= 'black', fill = NA)
