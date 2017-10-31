@@ -1,6 +1,6 @@
 ###
 ### Claire Kelling
-### Spatial Modeling of Crime
+### Exploratory Data Analysis- Detroit
 ###
 ### Created 10/29/17 for exploratory analysis
 ### 
@@ -13,7 +13,7 @@ library(readr)
 source("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert/src/shaby_point_ref_function.R")
 
 #load in data
-detroit_data <- read_csv("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert/data/original/Detroit_DPD__911_Calls_for_Service__September_20__2016_-_Present.csv")
+detroit_data <- read_csv("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/original/Detroit_DPD__911_Calls_for_Service__September_20__2016_-_Present.csv")
 
 #find all NA values for lat/long
 num_na <- sum(is.na(detroit_data$Longitude)) #35,288
