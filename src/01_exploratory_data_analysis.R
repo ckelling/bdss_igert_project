@@ -13,15 +13,20 @@ library(readr)
 source("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert/src/shaby_point_ref_function.R")
 
 #load in data
-detroit_data <- read_csv("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/original/Detroit_DPD__911_Calls_for_Service__September_20__2016_-_Present.csv")
+#detroit_data <- read_csv("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/original/Detroit_DPD__911_Calls_for_Service__September_20__2016_-_Present.csv")
 
 #find all NA values for lat/long
-num_na <- sum(is.na(detroit_data$Longitude)) #35,288
-num_nalat <- sum(is.na(detroit_data$Latitude)) # also 35,288
-perc_na <- num_na / nrow(detroit_data) #5.9%
+#num_na <- sum(is.na(detroit_data$Longitude)) #35,288
+#num_nalat <- sum(is.na(detroit_data$Latitude)) # also 35,288
+#perc_na <- num_na / nrow(detroit_data) #5.9%
 
 #subset the data to not include na's for latitude and longitude
-detroit_data <- detroit_data[!is.na(detroit_data$Longitude), ]
+#detroit_data <- detroit_data[!is.na(detroit_data$Longitude), ]
+#save(detroit_data, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+
+#load in subsetted data (data that has valid points for lat/long)
+load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+
 
 #convert data to spatial points
 coordinates(detroit_data) <- cbind(detroit_data$Longitude, detroit_data$Latitude)
