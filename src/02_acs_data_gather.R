@@ -34,6 +34,10 @@ employment <- data.frame(estimate(acs_employment))
 acs_tot_pop <- acs.fetch(geography=acs.detroit, endyear=2015, table.number="B01003", col.name="pretty")
 total_pop <- data.frame(estimate(acs_tot_pop))
 
+#poverty- all of the values are NA
+#acs_poverty <- acs.fetch(geography=acs.detroit, endyear=2015, table.number="B17001", col.name="pretty")
+#poverty <- data.frame(estimate(acs_poverty))
+
 #gender and age (not separate)
 acs_gen_age <- acs.fetch(geography=acs.detroit, endyear=2015, table.number="B01001", col.name="pretty")
 gen_age <- data.frame(estimate(acs_gen_age))
