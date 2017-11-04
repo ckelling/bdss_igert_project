@@ -1,16 +1,19 @@
 ###
 ### Claire Kelling
-### Plotting
+### Plotting ACS and Crime data by BG
 ###
 ### Created 11/03/17 for plotting of some acs and crime variables
 ### 
 
-#load crime data and acs data
+library(acs)
+library(tigris)
+
+#load crime data and acs data, and block group shape files
 load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/agg_crime_dat.Rdata")
 load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/acs_dat.Rdata")
 det_bg <- block_groups("Michigan", c("Wayne County"))
 
-
+#combining the data files
 full_dat <- left_join(acs_dat, agg_dat, by = c(GEOID = "GEOID"))
 
 
