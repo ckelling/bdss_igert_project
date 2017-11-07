@@ -2,3 +2,4 @@
 *.Rdata
 src/code_save.docx
 *.zip
+src/.Rhistory
