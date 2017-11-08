@@ -80,5 +80,7 @@ acs.detroit <- geo.make(state = 'MI', county = 'Wayne County', tract = '*', bloc
 acs_employment <- acs.fetch(geography = acs.detroit, endyear = '2015', table.number = 'B23025', col.names = 'pretty')
 employment <- data.frame(estimate(acs_employment))
 sum(employment$Employment.Status.for.the.Population.16.Years.and.Over..In.labor.force.)
+sum(mi_lodes_det$S000)
 #this dataset says there are 818,898 people employed in the labor force
 #some of them don't leave their block group! (almost half!)
+
