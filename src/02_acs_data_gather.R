@@ -68,6 +68,16 @@ acs_dat$med_age <- med_age$Median.Age.by.Sex..Median.age....Total.
 acs_dat$race_not_white <- 1- race$Race..White.alone/race$Race..Total.
 
 
+# Creation of Herfendall Index: economic measure given by Dr. Corina Graif
+acs_dat$herf_index <- rep(1,nrow(race))- ((race$Race..White.alone/race$Race..Total.)^2 +
+  (race$Race..Black.or.African.American.alone/race$Race..Total.)^2 +
+    (race$Race..American.Indian.and.Alaska.Native.alone/race$Race..Total.)^2+
+    (race$Race..Asian.alone/race$Race..Total.)^2+
+    (race$Race..Native.Hawaiian.and.Other.Pacific.Islander.alone/race$Race..Total.)^2+
+    (race$Race..Some.other.race.alone/race$Race..Total.)^2+
+    (race$Race..Two.or.more.races./race$Race..Total.)^2)
+
+
 #how to find the GEOID for these blockgroups?
 save(acs_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/acs_dat.Rdata")
 
