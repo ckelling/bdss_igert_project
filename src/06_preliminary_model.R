@@ -21,15 +21,15 @@ dat <- left_join(acs_dat, agg_dat, by = c(GEOID = "GEOID"))
 
 
 #I would like to substitute 0 for all block groups where there are no crimes in this time interval
-colnames(full_dat)[8] <- c("crime_freq")
-full_dat[is.na(full_dat$crime_freq),8]<- 0
+colnames(full_dat)[9] <- c("crime_freq")
+full_dat[is.na(full_dat$crime_freq),9]<- 0
 
 #total population and crime frequency aren't that related
 plot(full_dat$total_pop,full_dat$crime_freq)
 plot(full_dat$race_not_white,full_dat$crime_freq)
 
 full_dat <- full_dat[complete.cases(full_dat),] #0nly 1706 out of 1822 don't have any NA's
-#save(full_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+save(full_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
 
 #now, I would like to fit a preliminary regression model, with crime count being my response
 #first, I will fit my standard OLS regression
