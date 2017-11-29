@@ -62,7 +62,7 @@ nrow(mi_lodes_det_agg) # this should be equal to 192,352, and it IS
 hist(mi_lodes_det_agg$S000) #distribution is still very skewed
 
 #save the data to access later
-save(mi_lodes_det, mi_lodes_det_agg, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+#save(mi_lodes_det, mi_lodes_det_agg, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
 
 # url = paste0("http://lehd.ces.census.gov/data/lodes/LODES7/ca/od/ca_od_main_JT00_2015.csv.gz") 
 # download.file(url, 'lodes.csv.gz')
