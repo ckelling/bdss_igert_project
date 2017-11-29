@@ -43,7 +43,7 @@ plot(nb.bound, coords, pch = 19, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
 ## Least squares fits
-mod.ols <- lm(crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+race_not_white, data = det_bg)
+mod.ols <- lm(crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index, data = det_bg)
 summary(mod.ols) # standard errors, p-values not necessarily reliable
 resid <- as.data.frame(cbind(full_dat[,1],residuals(mod.ols)))
 colnames(resid) <- c("GEOID", "resid")
@@ -56,7 +56,16 @@ View(head(det_bg@data))
 ## Moran's test for spatial autocorrelation using a spatial weights matrix in weights list form.
 moran.test(det_bg$resid, listw = nb2listw(nb.bound, style = "B"))
 
+#convert to listw
+crime_listw <- nb2listw(nb.bound, style = "B") # convert to listw
+
 #CAR Model
-mod.car <- spautolm(Z ~ PEXPOSURE + PCTAGE65P + PCTOWNHOME,
-                    data = NY8, listw = NYlistw, family = "CAR")
+mod.car <- spautolm(crime_freq ~ median_income + upemp_rate+perc_male+med_age+herf_index, 
+                    data = det_bg, listw = crime_listw, family = "CAR", weights = total_pop)
+mod.car <- spautolm(crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index, 
+                    data = det_bg, listw = crime_listw, family = "CAR")
 summary(mod.car)
+
+
+
+# Now, I will work on the social proximity part.
