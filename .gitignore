@@ -3,3 +3,4 @@
 src/code_save.docx
 *.zip
 src/.Rhistory
+src/00_scratchwork.R
