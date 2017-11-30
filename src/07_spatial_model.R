@@ -43,7 +43,7 @@ plot(na_dat, col= "red", density =50,add = TRUE)
 nb.bound <- poly2nb(det_bg) # shared boundaries
 summary(nb.bound)
 coords <- coordinates(det_bg)
-plot(det_bg, border = "gray")
+plot(det_bg, border = "gray", main = "Geographic Proximity \nNeighborhood Structure")
 plot(nb.bound, coords, pch = 19, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
