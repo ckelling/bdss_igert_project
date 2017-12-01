@@ -4,3 +4,4 @@ src/code_save.docx
 *.zip
 src/.Rhistory
 src/00_scratchwork.R
+src/00_CARBayes_vignette_code.R
