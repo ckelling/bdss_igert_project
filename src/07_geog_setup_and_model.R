@@ -6,7 +6,7 @@
 ### 
 
 
-# I will begin by attempting to model the crime spatially.
+# I will begin by modeling the crime spatially.
 
 # Packages:
 library(sp)
