@@ -53,13 +53,14 @@ summary(model)
 W.nb <- proxim_nb
 W.list <- nb2listw(W.nb, style="B")
 resid.model <- residuals(model)
-moran.mc(x=resid.model, listw=W.list, nsim=1000)
+moran.mc(x=resid.model, listw=W.list, nsim=1500)
 
 #spatial modeling
 W <- nb2mat(W.nb, style="B")
 #this model took 28 minutes to run....
-model.spatial <- S.CARleroux(formula=form, data=det_bg@data,
+model.ler.soc <- S.CARleroux(formula=form, data=det_bg@data,
                              family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+#10:18
 #save(model.spatial, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/social_proxim_CARBayes_mod.Rdata")
 print(model.spatial)
 model.spatial$modelfit
@@ -68,3 +69,14 @@ model.spatial$fitted.values
 #inference
 #look to see if these include 0
 summarise.samples(model.spatial$samples$beta, quantiles=c(0.5, 0.025, 0.975))
+
+
+########################
+#######
+#######   Other model within CARBayes, Sglm
+#######
+########################
+model.bym.soc <- S.CARbym(formula=form, data=det_bg@data,
+                             family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+
+save(model.bym.soc, model.ler.soc, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/proxim_carbayes.Rdata")
