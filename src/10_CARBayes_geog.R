@@ -55,7 +55,7 @@ moran.mc(x=resid.model, listw=W.list, nsim=1000)
 
 #spatial modeling
 W <- nb2mat(W.nb, style="B")
-model.spatial <- S.CARleroux(formula=form, data=det_bg@data,
+model.ler.geog <- S.CARleroux(formula=form, data=det_bg@data,
                              family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
 print(model.spatial)
 model.spatial$modelfit
@@ -76,3 +76,14 @@ obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group
   labs(fill = "Fitted Values")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
                                                fill = NA, col = "black") +
   ggtitle("Fitted Values for CAR Bayes Model")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
+
+
+########################
+#######
+#######   Other model within CARBayes, Sglm
+#######
+########################
+model.bym.geog <- S.CARbym(formula=form, data=det_bg@data,
+                          family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+
+save(model.bym.geog, model.ler.geog, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/geog_carbayes.Rdata")
