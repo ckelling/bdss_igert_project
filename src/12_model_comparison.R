@@ -93,3 +93,8 @@ p5 <- plot_crime(model.bym.geog)
 
 grid.arrange(p1, p2, p3, p4, ncol=2)
 #save as 2000, 1300
+
+#looking at mixing of MCMC
+test <- model.bym.geog$samples$beta
+dim(test)
+acf(test)
