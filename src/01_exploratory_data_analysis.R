@@ -43,7 +43,7 @@ min(detroit_data$Longitude) # -83.99016
 
 #create a map of Detroit using Google maps API
 #with this level of zoom (8), I can include all of the points (any less, I miss some points)
-DetroitMap <- qmap('detroit', zoom = 10,color = 'bw', legend = 'topleft')
+DetroitMap <- qmap('detroit', zoom = 10, legend = 'topleft')
 DetroitMap
 max(DetroitMap$data$lat) # 42.3517
 min(DetroitMap$data$lat) # 42.31109
@@ -53,6 +53,7 @@ min(DetroitMap$data$lon) # -83.07318
 # Plot my crime data on the map of Detroit
 detroit_data <- as.data.frame(detroit_data)
 DetroitMap +geom_point(aes(x = Longitude, y = Latitude), data = detroit_data )
+DetroitMap+ geom_polygon(data = det_bg, aes(x = long, y = lat, group = group),colour= 'black', fill = NA)
 
 #the crimes are largely condensed within Detroit, but there are some outside of Detroit
 #this may be due to data entry error
