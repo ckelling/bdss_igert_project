@@ -17,6 +17,8 @@ library(dplyr)
 library(ade4) 
 library(igraph) 
 library(gridExtra)
+library(xtable)
+library(CARBayes)
 
 # Load data: 
 #   crime data
@@ -94,7 +96,14 @@ p5 <- plot_crime(model.bym.geog)
 grid.arrange(p1, p2, p3, p4, ncol=2)
 #save as 2000, 1300
 
-#looking at mixing of MCMC
-test <- model.bym.geog$samples$beta
-dim(test)
-acf(test)
+#looking at mixing of MCMC, subsitute relevant paramter
+samp_beta <- model.bym.geog$samples$beta
+dim(samp_beta)
+acf(samp_beta)
+
+#analyzing values of coefficients
+xtable(summarise.samples(model.bym.geog$samples$beta, quantiles=c(0.5, 0.025, 0.975))$quantiles)
+xtable(summarise.samples(model.bym.soc$samples$beta, quantiles=c(0.5, 0.025, 0.975))$quantiles)
+xtable(summarise.samples(model.ler.geog$samples$beta, quantiles=c(0.5, 0.025, 0.975))$quantiles)
+xtable(summarise.samples(model.ler.soc$samples$beta, quantiles=c(0.5, 0.025, 0.975))$quantiles)
+
