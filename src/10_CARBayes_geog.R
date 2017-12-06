@@ -49,6 +49,7 @@ summary(model)
 #also computes Moran's I statistic 
 #if p-value < 0.05, we conclude there is positve spatial autocorrelation
 W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data))
+
 W.list <- nb2listw(W.nb, style="B")
 resid.model <- residuals(model)
 moran.mc(x=resid.model, listw=W.list, nsim=1000)
