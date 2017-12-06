@@ -181,7 +181,7 @@ dcross <- rdist.earth(coordinates(detroit_data), coordinates(grid))
 dpred <- rdist.earth(coordinates(grid))
 Xpred <- cbind(rep(1,m), grid$Longitude, grid$Latitude)
 
-length(unique(d))+nrow(d)
+#length(unique(d))+nrow(d)
 8607000+nrow(d)
 #Construct the covariance matrixes
 Gamma <- exp(-d/rho.hat)
@@ -210,7 +210,7 @@ se_pred <- sqrt(v_pred)
 
 
 range(se_pred)
-breaks <- seq(range(se_pred)[1], range(se_pred)[2], by = 0.001)
+breaks <- seq(range(se_pred)[1], range(se_pred)[2], by = 0.00001)
 ploteqc(grid, se_pred, breaks, pch = 19)
 #plot(det_bg, add = TRUE)
 title(main = "Standard Error, Wav")
