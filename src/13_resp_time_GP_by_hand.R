@@ -44,7 +44,7 @@ detroit_data <- detroit_data[-which(is.na(detroit_data$`Total Response Time`)),]
 detroit_data@data <- detroit_data@data[,c(1,5,13,17,23,24)]
 #take only the complete cases
 keep <- which(complete.cases(detroit_data@data))
-#detroit_data <- detroit_data[keep,]
+detroit_data <- detroit_data[keep,]
 
 ploteqc <- function(spobj, z, breaks, ...){
   pal <- tim.colors(length(breaks)-1)
@@ -90,7 +90,7 @@ grid <- SpatialPointsDataFrame(grid, data = grid_data)
 #I would like to predict over this grid, just using lat long
 #I do not know any other variable at every location on the grid
 ## I would like to take a subset of the data for the analysis below
-detroit_data <- plot_dat
+#detroit_data <- plot_dat
 #Fitting the preliminary linear model
 linmod <- lm(`Total Response Time` ~ Longitude + Latitude, data=detroit_data@data)
 summary(linmod)
@@ -104,7 +104,7 @@ beta_lin
 #plotting the residuals
 range(detroit_data$resid)
 breaks <- seq(range(detroit_data$resid)[1], range(detroit_data$resid)[2], by = 10)
-ploteqc(detroit_data, detroit_data$resid, breaks, pch = 19, xlim = xlim, ylim = ylim)
+ploteqc(detroit_data, detroit_data$resid, breaks, pch = 19)#, xlim = xlim, ylim = ylim)
 plot(det_bg, add= TRUE)
 title(main = "Residuals of Linear Model")
 
@@ -113,6 +113,7 @@ View(head(detroit_data@data))
 ##
 # Variogram Estimation
 ##
+detroit_data <- plot_dat
 
 ##  Nonparametric estimation of the variogram
 vg <- variogram(resid ~ 1, data = detroit_data)#, width=75)
@@ -120,11 +121,12 @@ print(vg)
 plot(vg, xlab = "Distance", ylab = "Nonparametric Semi-variogram estimate", width=5)
 
 ##  Fitting the variogram parametrically
-fitvg <- fit.variogram(vg, vgm("Wav"), fit.method = 1)
+fitvg <- fit.variogram(vg, vgm("Sph"), fit.method = 1)
 print(fitvg)
 s2.hat <- fitvg$psill[2]
 rho.hat <- fitvg$range[2]
 tau2.hat <- fitvg$psill[1]
+?fit.variogram
 
 paste("So, my estimate for sigma^2 is", s2.hat, ", my estimate for rho is")
 paste(rho.hat, ", and my estimate for tau is ", tau2.hat, ".")
@@ -220,5 +222,3 @@ ploteqc(grid, se_pred, breaks, pch = 19)
 #plot(det_bg, add = TRUE)
 title(main = "Standard Error with Observed Points")
 points(detroit_data)
-
-#create mean-squared error?
