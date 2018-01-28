@@ -64,3 +64,21 @@ obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group
   ggtitle("Number of Crimes per Block Group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
 
 save(agg_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/agg_crime_dat.Rdata")
+
+
+
+###
+# Next, I need to subset the crime to only include codes that are related to domestic violence
+###
+length(unique(detroit_data$`Call Description`)) # there are 217 call codes
+#length(unique(detroit_data$Category))
+#length(unique(detroit_data$`Call Code`))
+
+# Call Description is slightly longer than category
+
+###
+# Find subset of categories to use
+###
+unique_codes <- unique(detroit_data$`Call Description`)
+domv_codes <- c("code1", "code2")
+length(domv_codes) #there are xxx acceptable domv related codes
