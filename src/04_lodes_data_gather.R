@@ -58,7 +58,7 @@ mi_lodes_det <- mi_lodes_det[,-c(13)]
 
 #aggregating by unique combinations of the work and home geocodes
 mi_lodes_det_agg <- aggregate(. ~ w_geocode + h_geocode, data = mi_lodes_det, FUN = sum)      
-nrow(mi_lodes_det_agg) # this should be equal to 192,352, and it IS 
+nrow(mi_lodes_det_agg) # this should be equal to 192,352, and it is
 hist(mi_lodes_det_agg$S000) #distribution is still very skewed
 
 #save the data to access later
@@ -84,3 +84,18 @@ sum(mi_lodes_det$S000)
 #this dataset says there are 818,898 people employed in the labor force
 #some of them don't leave their block group! (almost half!)
 
+
+###
+# Creating a cutoff for the LODES data
+### 
+load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+#need to decide cutoff value
+hist(mi_lodes_det_agg$S000)
+length(which(mi_lodes_det_agg$S000 > 1))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
+#However, this is still 65,803 network ties
+
+###
+# For now, I will use this as my cutoff to create meaningful social proximity links
+###
+subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000 > 1),]
+save(subs_lodes, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/subs_lodes.Rdata")
