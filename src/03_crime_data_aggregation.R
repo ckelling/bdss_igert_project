@@ -11,7 +11,7 @@ library(tigris)
 library(dplyr)
 
 #load in subsetted data- only data that has valid values for Lat/Long
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/detroit_data.Rdata")
 
 #load in census block group spatial polygons
 det_bg <- block_groups("Michigan", c("Wayne County"))
@@ -67,14 +67,14 @@ save(agg_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_pro
 
 
 
-###
+#############################################################################
 # Next, I need to subset the crime to only include codes that are related to domestic violence
-###
+#############################################################################
+
 length(unique(detroit_data$`Call Description`)) # there are 217 call codes
 #length(unique(detroit_data$Category))
 #length(unique(detroit_data$`Call Code`))
-
-# Call Description is slightly longer than category
+#              Call Description is slightly longer than category
 
 ###
 # Find subset of categories to use
@@ -86,4 +86,51 @@ domv_codes <- c( "CHILD /  ADULT ABUSE", "CHILD / ADULT ABUSE REPORT", "RAPE REP
 probable <- c("ASSAULT AND BATTERY", "FELONIOUS ASSAULT JH", "FELONIOUS ASSAULT IP",
               "FELONIOUS ASSAULT REPORT", "ASSAULT AND BATTERY REPORT")
 possible <- c("NOISE COMPLAINT", "SHOTS FIRED IP")
-length(domv_codes) #there are xxx acceptable domv related codes
+length(domv_codes) #there are 9 acceptable domv related codes
+
+##
+#Now, subset the data
+##
+domv_dat_detroit <- detroit_data[which(detroit_data$`Call Description` %in% domv_codes),]
+
+##
+#Overlay the points, as above, except for domestic violence
+##
+overlap_set <- over(domv_dat_detroit, det_bg)
+nrow(domv_dat_detroit)
+nrow(overlap_set) #it has classified each of the points in the dataset into a block group
+sum(is.na(overlap_set$STATEFP)) #there are 2961 crimes that actually occur outside of Wayne county
+#these may be crimes that the police responded to on their own or were incorrectly entered
+
+detroit_df <- as.data.frame(domv_dat_detroit)
+det_dat_over <- cbind(detroit_df, overlap_set)
+#det_dat_over <- det_dat_over[!is.na(over(domv_dat_detroit,det_bg)),]
+det_dat_ov <- det_dat_over[!is.na(det_dat_over$GEOID),]
+#should have 563592 rows (all the rows that are included in the spatial area)
+
+#Therefore, I will proceed with the following data-set
+#  I will edit the data to only keep the useful columns
+det_dat_ov <- det_dat_ov[,-c(31:37)]
+
+agg_domv_dat <- plyr::count(det_dat_ov, c('GEOID'))
+agg_domv_dat$GEOID <- as.factor(agg_domv_dat$GEOID)
+
+
+#now I would like to create a plot that illustrates how many crimes are occuring per block groups
+num_per_bg <- as.numeric(agg_domv_dat$freq)
+
+#Now I will create the data structure that I need to create a plot
+sp_f <- fortify(det_bg)
+det_bg$id <- row.names(det_bg)
+det_bg@data <- left_join(det_bg@data, agg_domv_dat, by = (GEOID = "GEOID"))
+sp_f <- left_join(sp_f, det_bg@data[,c(13,14)])
+#num <- num_per_dist
+
+#make a color or grayscale plot to illustrate this
+obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = freq)) + coord_equal() +
+  labs(fill = "No. of \nCrimes")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
+                                               fill = NA, col = "black") +
+  ggtitle("Number of Crimes per Block Group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
+
+save(agg_domv_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/agg_crime_dat.Rdata")
+
