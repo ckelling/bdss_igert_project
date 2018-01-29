@@ -80,5 +80,10 @@ length(unique(detroit_data$`Call Description`)) # there are 217 call codes
 # Find subset of categories to use
 ###
 unique_codes <- unique(detroit_data$`Call Description`)
-domv_codes <- c("code1", "code2")
+domv_codes <- c( "CHILD /  ADULT ABUSE", "CHILD / ADULT ABUSE REPORT", "RAPE REPORT", "HARASSMENT REPORT",
+                 "ASSAULT OR SEX ASSAULT DELTA", "RAPE IP OR JH", "MOLESTATION REPORT",
+                 "ASSAULT  NOT DANGEROUS OR PREV", "MOLESTATION")
+probable <- c("ASSAULT AND BATTERY", "FELONIOUS ASSAULT JH", "FELONIOUS ASSAULT IP",
+              "FELONIOUS ASSAULT REPORT", "ASSAULT AND BATTERY REPORT")
+possible <- c("NOISE COMPLAINT", "SHOTS FIRED IP")
 length(domv_codes) #there are xxx acceptable domv related codes
