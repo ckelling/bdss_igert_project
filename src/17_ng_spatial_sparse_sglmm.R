@@ -67,7 +67,10 @@ sp_sglmm_fit <- sparse.sglmm(formula = form,data=det_bg@data, family = poisson, 
                          verbose = TRUE) #tune = list(sigma.s = 0.02)
 
 #started at 9:06am, 942 MB (says 1 hr remaining)
+#save(sp_sglmm_fit, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/sp_glmm_fit.Rdata")
 
+sp_sglmm_fit$coefficients
+summary(sp_sglmm_fit)
 
 print(model.spatial)
 model.spatial$modelfit
@@ -89,3 +92,30 @@ obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group
                                                fill = NA, col = "black") +
   ggtitle("Fitted Values for CAR Bayes Model")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
 
+
+
+###
+### Comparison
+###
+load("C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/geog_carbayes.Rdata")
+summary(sp_sglmm_fit)
+# Coefficients:
+#   
+#                 Estimate      Lower      Upper      MCSE
+# (Intercept)    5.997e+00  5.958e+00  6.0150000 3.340e-03
+# median_income -2.024e-05 -2.038e-05 -0.0000199 3.524e-08
+# upemp_rate     2.638e-01  2.398e-01  0.2965000 1.325e-03
+# total_pop      1.168e-06 -5.874e-06  0.0000085 1.149e-07
+# perc_male     -2.180e-01 -2.559e-01 -0.1841000 6.865e-04
+# med_age       -1.030e-02 -1.064e-02 -0.0099500 5.859e-06
+# herf_index     4.661e-01  4.492e-01  0.4869000 7.202e-04
+summary(model.bym.geog)
+model.bym.geog$summary.results[,1:3]
+#                Median    2.5%   97.5%
+# (Intercept)    2.1767  1.9286  2.4927
+# median_income  0.0000  0.0000  0.0000
+# upemp_rate     0.4304  0.2351  0.5651
+# total_pop      0.0005  0.0004  0.0005
+# perc_male      0.4320  0.3627  0.5008
+# med_age       -0.0015 -0.0030 -0.0004
+# herf_index     0.7989  0.7704  0.8284
