@@ -1,8 +1,8 @@
 ###
 ### Claire Kelling
-### CARBayes Geographic Proxim
+### All models KDD
 ###
-### Created 11/30/17 to model the geographic proximity data using the CARBayes Poisson GLM structure
+### Created 2/7/18 to complete all models for KDD paper
 ### 
 ### 
 
@@ -23,16 +23,17 @@ library(ngspatial)
 library(pbapply)
 
 # Load data: 
-#   crime data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+#   subsetted crime data
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 #   shape file
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
-#   social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+#   subsetted social proximity lodes data
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+
 
 #re-formatting to add the data to the SpatialPolygonsDataFrame
 det_bg$id <- row.names(det_bg)
-det_bg@data <- left_join(det_bg@data, full_dat, by = (GEOID = "GEOID"))
+det_bg@data <- left_join(det_bg@data, agg_domv_dat_comp, by = (GEOID = "GEOID"))
 
 #remove census block groups with no crimes
 length(which(is.na(det_bg$median_income)))
