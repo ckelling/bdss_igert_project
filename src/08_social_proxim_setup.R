@@ -22,12 +22,15 @@ library(igraph)
 
 # Load data: 
 #   crime data
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
 #   shape file
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/det_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
 #   social proximity lodes data
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
-
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+#   subsetted social proximity lodes data
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+shape_file <- det_bg
+mi_lodes_det_agg <- subs_lodes
 
 edgelist <- mi_lodes_det_agg[,c(1,2)]
 edgelist <- as.matrix(edgelist)
@@ -74,17 +77,35 @@ det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
 #they are equal (checked!)
 #View(cbind(det_bg$GEOID, new_geoid[,2]))
 mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is complete
+dim(mat)
+W.soc <- mat
+save(W.soc,file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc.Rdata")
+
+ind <- NULL
+for(i in 1:nrow(mat)){
+  if(sum(mat[i,]) == 0){
+    ind <- c(ind,i)
+  }
+}
+mat <- mat[-ind,-ind]
+det_bg_soc <- det_bg[-ind,]
+#save(det_bg_soc, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_soc.Rdata")
+dim(mat)
 
 #create nb object
 proxim_nb <- neig2nb(neig(mat01 = mat))
 test2 <- neig(mat01 = mat)
 
+
 #now I would like to plot the social proximity
-coords <- coordinates(det_bg)
-plot(det_bg, border = "gray")
+coords <- coordinates(det_bg_soc)
+plot(shape_file, border = "gray",  main = "Social Proximity")
 plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 #plot(na_dat, col= "red", density =50, border = "gray")
+
+summary(proxim_nb)
+summary(W.nb)
 
 ######################################################################################
 ##### Now, I will make a subset of the social proximity data, to make a clearer plot,
@@ -157,4 +178,4 @@ plot(det_bg, border = "gray", main = "Social Proximity \nNeighborhood Structure 
 plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
-#save(proxim_nb, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/proxim_nb.Rdata")
+#save(proxim_nb, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/proxim_nb.Rdata")
