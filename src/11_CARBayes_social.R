@@ -79,4 +79,4 @@ summarise.samples(model.spatial$samples$beta, quantiles=c(0.5, 0.025, 0.975))
 model.bym.soc <- S.CARbym(formula=form, data=det_bg@data,
                              family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
 
-save(model.bym.soc, model.ler.soc, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/proxim_carbayes.Rdata")
+#save(model.bym.soc, model.ler.soc, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/proxim_carbayes.Rdata")
