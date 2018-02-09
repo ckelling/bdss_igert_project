@@ -12,6 +12,8 @@ library(dplyr)
 
 #load in subsetted data- only data that has valid values for Lat/Long
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/acs_dat.Rdata")
+
 
 #load in census block group spatial polygons
 det_bg <- block_groups("Michigan", c("Wayne County"))
@@ -91,7 +93,9 @@ length(domv_codes) #there are 9 acceptable domv related codes
 ##
 #Now, subset the data
 ##
-domv_dat_detroit <- detroit_data@data[which(detroit_data$`Call Description` %in% domv_codes),]
+domv_dat_detroit <- detroit_data[which(detroit_data$`Call Description` %in% domv_codes),]
+coordinates(domv_dat_detroit) <- ~Longitude+Latitude
+proj4string(domv_dat_detroit) <- CRS("+proj=longlat")
 
 ##
 #Overlay the points, as above, except for domestic violence
@@ -130,5 +134,12 @@ obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group
                                                fill = NA, col = "black") +
   ggtitle("Number of Crimes per Block Group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
 
-#save(agg_domv_dat, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/final/agg_crime_dat.Rdata")
+
+#need to add acs variables
+
+agg_domv_dat2 <- left_join(acs_dat, agg_domv_dat, by = c(GEOID = "GEOID"))
+agg_domv_dat2$freq[which(is.na(agg_domv_dat2$freq))] <- 0
+agg_domv_dat_comp <- agg_domv_dat2[which(complete.cases(agg_domv_dat2)),] # 1706 out of 1822
+
+save(agg_domv_dat_comp, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 
