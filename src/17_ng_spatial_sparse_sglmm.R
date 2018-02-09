@@ -21,6 +21,7 @@ library(CARBayesdata)
 library(CARBayes)
 library(ngspatial)
 library(pbapply)
+library(gridExtra)
 
 # Load data: 
 #   subsetted crime data
@@ -28,9 +29,9 @@ load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_d
 #   shape file
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
 #   social proximity nb object
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subset_soc_proxim_nb.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/proxim_nb.Rdata")
 #   subsetted shape file for social proximity
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_soc.Rdata")
+#load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_soc.Rdata")
 #   subsetted shape file for geographic proximity
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_geog.Rdata")
 #   proximity matrix for social
@@ -41,7 +42,7 @@ load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc
 #    null hypothesis of no spatial autocorrelation (alternative of positive spatial autocorrelation)
 #    also computes Moran's I statistic 
 #    if p-value < 0.05, we conclude there is positve spatial autocorrelation
-W.nb <- poly2nb(det_bg_geog, row.names = rownames(det_bg_geog@data)) #supposed to be 787
+W.nb <- poly2nb(det_bg_geog, row.names = rownames(det_bg_geog@data)) 
 
 # Summary of nb's
 #summary(W.nb)
@@ -51,7 +52,7 @@ W.nb <- poly2nb(det_bg_geog, row.names = rownames(det_bg_geog@data)) #supposed t
 #non-spatial modeling (just linear model)
 form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
 model <- lm(formula=form, data=det_bg_geog@data)
-summary(model)
+#summary(model)
 
 W.list <- nb2listw(W.nb, style="B")
 resid.model <- residuals(model)
@@ -81,13 +82,15 @@ moran.mc(x=resid.model, listw=W.list, nsim=1000)
 ####
 W <- nb2mat(W.nb, style="B")
 rownames(W) <- NULL #need this for test if matrix is symmetric
+set.seed(123)
 model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+                             family="poisson", W=W_geog, burnin=20000, n.sample=120000, thin=10)
 model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
-                          family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+                              family="poisson", W=W_geog, burnin=20000, n.sample=120000, thin=10)
 sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W,
                          verbose = TRUE) #tune = list(sigma.s = 0.02)
-
+#save_geog_bym <- model.bym.geog
+#save_geog_ler <- model.ler.geog
 #save(sp_sglmm_fit, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/sp_glmm_fit.Rdata")
 
 
@@ -95,6 +98,7 @@ sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family =
 #### Social AND Geographic modeling
 ####
 rownames(bin_W) <- NULL #need this for test if matrix is symmetric
+set.seed(123)
 model.ler.soc <- S.CARleroux(formula=form, data=det_bg_geog@data,
                              family="poisson", W=bin_W, burnin=20000, n.sample=120000, thin=10)
 model.bym.soc <- S.CARbym(formula=form, data=det_bg_geog@data,
@@ -103,21 +107,27 @@ sp.sglmm.fit.soc <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = 
                                  verbose = TRUE) #tune = list(sigma.s = 0.02)
 
 
-save(model.ler.geog, model.bym.geog, sp.sglmm.fit.geog, model.ler.soc, model.bym.soc, sp.sglmm.fit.soc,  file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_mod_fit.Rdata")
-
+#save(model.bym.geog,model.ler.geog, model.bym.geog, sp.sglmm.fit.geog, model.ler.soc, model.bym.soc, sp.sglmm.fit.soc,  file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_mod_fit_final.Rdata")
+#save(model.bym.geog, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/geog_bym_fit.Rdata")
+#load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/geog_bym_fit.Rdata")
 
 ####
 ####  Model Comparison
 ####
+#load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_mod_fit.Rdata")
+#model.bym.geog <- save_geog_bym
 
-model.ler.geog$modelfit
 model.bym.geog$modelfit
-summary(sp.sglmm.fit.geog)
+model.ler.geog$modelfit 
+
+#summary(sp.sglmm.fit.geog)
 sp.sglmm.fit.geog$dic
 sp.sglmm.fit.geog$pD
-model.ler.soc$modelfit
+
 model.bym.soc$modelfit
-summary(sp.sglmm.fit.soc)
+model.ler.soc$modelfit
+
+#summary(sp.sglmm.fit.soc)
 sp.sglmm.fit.soc$dic
 sp.sglmm.fit.soc$pD
 
@@ -128,13 +138,13 @@ sp.sglmm.fit.soc$pD
 #   function for plot
 plot_fit <- function(spat_mod){
   fit_values <- spat_mod$fitted.values
-  det_bg@data$fit_val <- fit_values
-  sp_f <- fortify(det_bg)
+  det_bg_geog@data$fit_val <- fit_values
+  sp_f <- fortify(det_bg_geog)
   sp_f <- left_join(sp_f, det_bg_geog@data[,c(13,22)])
   fit_by_bg <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = fit_val)) + coord_equal() +
     labs(fill = "Fitted Values")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
                                                fill = NA, col = "black") +
-    ggtitle("Fitted Values for Social Leroux")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
+    ggtitle("Fitted Values for Social BYM")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
     theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
   return(fit_by_bg)
 }
@@ -142,13 +152,13 @@ plot_fit <- function(spat_mod){
 
 plot_crime <- function(spat_mod){
   fit_values <- spat_mod$fitted.values
-  det_bg@data$fit_val <- fit_values
-  sp_f <- fortify(det_bg)
+  det_bg_geog@data$fit_val <- fit_values
+  sp_f <- fortify(det_bg_geog)
   sp_f <- left_join(sp_f, det_bg_geog@data[,c(13,21)])
-  fit_by_bg <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = crime_freq)) + coord_equal() +
+  fit_by_bg <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = freq)) + coord_equal() +
     labs(fill = "Number of Crimes")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
                                                   fill = NA, col = "black") +
-    ggtitle("Number of Crimes per block group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
+    ggtitle("Number of Domestic Violence Crimes per block group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
     theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
   return(fit_by_bg)
 }
@@ -162,9 +172,13 @@ p5 <- plot_fit(model.ler.soc)
 p6 <- plot_fit(sp.sglmm.fit.soc)
 
 #plot the actual crime data, using any model
-p7 <- plot_crime(model.bym.geog)
+p7 <- plot_crime(model.ler.geog)
 
-grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3)
+#load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/fit_val_images.Rdata")
+#save(p2,p3,p4,p5,p6,p7,  file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/fit_val_images.Rdata")
+
+#dimensions: 2500x2500
+grid.arrange(p1, p4, p2, p5, p3, p6, ncol=2)
 p7
 
 
@@ -193,3 +207,23 @@ model.bym.geog$summary.results[,1:3]
 # perc_male      0.4320  0.3627  0.5008
 # med_age       -0.0015 -0.0030 -0.0004
 # herf_index     0.7989  0.7704  0.8284
+
+summary(sp.sglmm.fit.geog)
+# Estimate      Lower      Upper      MCSE
+# (Intercept)    1.859e+00  1.540e+00  2.151e+00 4.040e-03
+# median_income -2.563e-05 -2.812e-05 -2.289e-05 4.306e-08
+# upemp_rate     2.425e-01 -3.647e-02  5.127e-01 1.759e-03
+# total_pop     -1.720e-06 -7.189e-05  6.751e-05 4.672e-07
+# perc_male     -8.085e-01 -1.152e+00 -4.666e-01 1.777e-03
+# med_age        8.395e-04 -2.326e-03  3.980e-03 1.635e-05
+# herf_index    -5.341e-01 -7.157e-01 -3.523e-01 1.710e-03
+
+model.bym.geog$summary.results[,1:3]
+# Median    2.5%   97.5%
+#   (Intercept)   -0.9985 -1.7473 -0.2400
+# median_income  0.0000  0.0000  0.0000
+# upemp_rate     0.5071 -0.1058  1.1125
+# total_pop      0.0004  0.0002  0.0005
+# perc_male     -0.5588 -1.3682  0.2495
+# med_age        0.0067 -0.0012  0.0145
+# herf_index     0.0765 -0.4074  0.6355
