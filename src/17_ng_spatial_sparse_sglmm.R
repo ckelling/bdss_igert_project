@@ -27,78 +27,153 @@ library(pbapply)
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 #   shape file
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
-#   subsetted social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+#   social proximity nb object
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subset_soc_proxim_nb.Rdata")
+#   subsetted shape file for social proximity
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_soc.Rdata")
+#   subsetted shape file for geographic proximity
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_geog.Rdata")
+#   proximity matrix for social
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc.Rdata")
 
 
-#re-formatting to add the data to the SpatialPolygonsDataFrame
-det_bg$id <- row.names(det_bg)
-det_bg@data <- left_join(det_bg@data, agg_domv_dat_comp, by = (GEOID = "GEOID"))
+# Test for spatial dependence
+#    null hypothesis of no spatial autocorrelation (alternative of positive spatial autocorrelation)
+#    also computes Moran's I statistic 
+#    if p-value < 0.05, we conclude there is positve spatial autocorrelation
+W.nb <- poly2nb(det_bg_geog, row.names = rownames(det_bg_geog@data)) #supposed to be 787
 
-#remove census block groups with no crimes
-length(which(is.na(det_bg$median_income)))
-na_dat<- det_bg[which(is.na(det_bg$median_income)),]
-det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
+# Summary of nb's
+#summary(W.nb)
+#summary(proxim_nb)
 
-#pairs(full_dat[,2:9])
 
-#non-spatial modeling
-form <- crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
-model <- lm(formula=form, data=det_bg@data)
+#non-spatial modeling (just linear model)
+form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
+model <- lm(formula=form, data=det_bg_geog@data)
 summary(model)
-
-#test for spatial dependence
-#null hypothesis of no spatial autocorrelation (alternative of positive spatial autocorrelation)
-#also computes Moran's I statistic 
-#if p-value < 0.05, we conclude there is positve spatial autocorrelation
-W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data))
 
 W.list <- nb2listw(W.nb, style="B")
 resid.model <- residuals(model)
 moran.mc(x=resid.model, listw=W.list, nsim=1000)
 
-#spatial modeling
+##############
+### Creating separate adjacency matrices from nb
+##############
+W_geog <- nb2mat(W.nb, style="B")
+W_soc <- W.soc
+
+#############
+###  Combining adjacency matrices
+#############
+#addition
+add_W <- W_geog + W_soc
+#binary
+bin_W <- ifelse(add_W == 2, 1, add_W)
+bin_nb <- neig2nb(neig(mat01 = bin_W))
+summary(bin_nb)
+
+W.list <- nb2listw(bin_nb, style="B")
+moran.mc(x=resid.model, listw=W.list, nsim=1000)
+
+####
+#### Geographic modeling
+####
 W <- nb2mat(W.nb, style="B")
 rownames(W) <- NULL #need this for test if matrix is symmetric
-model.ler.geog <- S.CARleroux(formula=form, data=det_bg@data,
+model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
                              family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
-
-
-sp_sglmm_fit <- sparse.sglmm(formula = form,data=det_bg@data, family = poisson, A = W,
+model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
+                          family="poisson", W=W, burnin=20000, n.sample=120000, thin=10)
+sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W,
                          verbose = TRUE) #tune = list(sigma.s = 0.02)
 
-#started at 9:06am, 942 MB (says 1 hr remaining)
 #save(sp_sglmm_fit, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/sp_glmm_fit.Rdata")
 
-sp_sglmm_fit$coefficients
-summary(sp_sglmm_fit)
 
-print(model.spatial)
-model.spatial$modelfit
-fit_val <- model.spatial$fitted.values
+####
+#### Social AND Geographic modeling
+####
+rownames(bin_W) <- NULL #need this for test if matrix is symmetric
+model.ler.soc <- S.CARleroux(formula=form, data=det_bg_geog@data,
+                             family="poisson", W=bin_W, burnin=20000, n.sample=120000, thin=10)
+model.bym.soc <- S.CARbym(formula=form, data=det_bg_geog@data,
+                          family="poisson", W=bin_W, burnin=20000, n.sample=120000, thin=10)
+sp.sglmm.fit.soc <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = bin_W,
+                                 verbose = TRUE) #tune = list(sigma.s = 0.02)
 
-#inference
-#look to see if these include 0
-summarise.samples(model.spatial$samples$beta, quantiles=c(0.5, 0.025, 0.975))
+
+save(model.ler.geog, model.bym.geog, sp.sglmm.fit.geog, model.ler.soc, model.bym.soc, sp.sglmm.fit.soc,  file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_mod_fit.Rdata")
+
+
+####
+####  Model Comparison
+####
+
+model.ler.geog$modelfit
+model.bym.geog$modelfit
+summary(sp.sglmm.fit.geog)
+sp.sglmm.fit.geog$dic
+sp.sglmm.fit.geog$pD
+model.ler.soc$modelfit
+model.bym.soc$modelfit
+summary(sp.sglmm.fit.soc)
+sp.sglmm.fit.soc$dic
+sp.sglmm.fit.soc$pD
+
+
+fit.val.ler.geog <- model.ler.geog$fitted.values
+
 
 #now I would like to plot the fitted values
 #need to get data in the right format
 det_bg@data$fit_val <- fit_val
 sp_f <- fortify(det_bg)
-#num <- num_per_dist
 
-#make a color or grayscale plot to illustrate this
-obs_by_dist <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = fit_val)) + coord_equal() +
-  labs(fill = "Fitted Values")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
+
+#   function for plot
+plot_fit_bym_ler <- function(spat_mod){
+  fit_values <- spat_mod$fitted.values
+  det_bg@data$fit_val <- fit_values
+  sp_f <- fortify(det_bg)
+  sp_f <- left_join(sp_f, det_bg_geog@data[,c(13,22)])
+  fit_by_bg <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = fit_val)) + coord_equal() +
+    labs(fill = "Fitted Values")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
                                                fill = NA, col = "black") +
-  ggtitle("Fitted Values for CAR Bayes Model")+ scale_fill_gradient(low = "lightblue", high = "navyblue")
+    ggtitle("Fitted Values for Social Leroux")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
+    theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
+  return(fit_by_bg)
+}
 
+plot_crime <- function(spat_mod){
+  fit_values <- spat_mod$fitted.values
+  det_bg@data$fit_val <- fit_values
+  sp_f <- fortify(det_bg)
+  sp_f <- left_join(sp_f, det_bg_geog@data[,c(13,21)])
+  fit_by_bg <- ggplot() + geom_polygon(data = sp_f, aes(long, lat, group = group, fill = crime_freq)) + coord_equal() +
+    labs(fill = "Number of Crimes")+ geom_polygon(data=sp_f,aes(long,lat, group = group), 
+                                                  fill = NA, col = "black") +
+    ggtitle("Number of Crimes per block group")+ scale_fill_gradient(low = "lightblue", high = "navyblue")+
+    theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
+  return(fit_by_bg)
+}
+
+#   plotting all of the fitted values
+p1 <- plot_fit(model.bym.soc)
+p2 <- plot_fit(model.ler.soc)
+p3 <- plot_fit(model.bym.geog)
+p4 <- plot_fit(model.ler.geog)
+
+#plot the actual crime data, using any model
+p5 <- plot_crime(model.bym.geog)
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
 
 
 ###
 ### Comparison
 ###
-load("C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/geog_carbayes.Rdata")
+#load("C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/geog_carbayes.Rdata")
 summary(sp_sglmm_fit)
 # Coefficients:
 #   
