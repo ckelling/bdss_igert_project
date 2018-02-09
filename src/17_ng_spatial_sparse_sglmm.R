@@ -122,17 +122,11 @@ sp.sglmm.fit.soc$dic
 sp.sglmm.fit.soc$pD
 
 
-fit.val.ler.geog <- model.ler.geog$fitted.values
-
-
 #now I would like to plot the fitted values
 #need to get data in the right format
-det_bg@data$fit_val <- fit_val
-sp_f <- fortify(det_bg)
-
 
 #   function for plot
-plot_fit_bym_ler <- function(spat_mod){
+plot_fit <- function(spat_mod){
   fit_values <- spat_mod$fitted.values
   det_bg@data$fit_val <- fit_values
   sp_f <- fortify(det_bg)
@@ -144,6 +138,7 @@ plot_fit_bym_ler <- function(spat_mod){
     theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
   return(fit_by_bg)
 }
+
 
 plot_crime <- function(spat_mod){
   fit_values <- spat_mod$fitted.values
@@ -159,15 +154,18 @@ plot_crime <- function(spat_mod){
 }
 
 #   plotting all of the fitted values
-p1 <- plot_fit(model.bym.soc)
-p2 <- plot_fit(model.ler.soc)
-p3 <- plot_fit(model.bym.geog)
-p4 <- plot_fit(model.ler.geog)
+p1 <- plot_fit(model.bym.geog)
+p2 <- plot_fit(model.ler.geog)
+p3 <- plot_fit(sp.sglmm.fit.geog)
+p4 <- plot_fit(model.bym.soc)
+p5 <- plot_fit(model.ler.soc)
+p6 <- plot_fit(sp.sglmm.fit.soc)
 
 #plot the actual crime data, using any model
-p5 <- plot_crime(model.bym.geog)
+p7 <- plot_crime(model.bym.geog)
 
-grid.arrange(p1, p2, p3, p4, ncol=2)
+grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3)
+p7
 
 
 ###
