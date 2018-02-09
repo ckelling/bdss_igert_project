@@ -178,4 +178,4 @@ plot(det_bg, border = "gray", main = "Social Proximity \nNeighborhood Structure 
 plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
-#save(proxim_nb, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/proxim_nb.Rdata")
+#save(proxim_nb, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/proxim_nb.Rdata")
