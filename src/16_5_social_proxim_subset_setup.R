@@ -86,7 +86,7 @@ test2 <- neig(mat01 = mat)
 
 #now I would like to plot the social proximity
 coords <- coordinates(det_bg)
-plot(det_bg, border = "gray")
+plot(det_bg, border = "gray", main = "Detroit Social Proximity Neighborhood")
 plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 #plot(na_dat, col= "red", density =50, border = "gray")
