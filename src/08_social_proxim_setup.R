@@ -29,6 +29,18 @@ load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
 #   subsetted social proximity lodes data
 load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+#need to decide cutoff value
+hist(mi_lodes_det_agg$S000)
+length(which(mi_lodes_det_agg$S000 > 15))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
+#However, this is still 65,803 network ties
+
+###
+# For now, I will use this as my cutoff to create meaningful social proximity links
+###
+subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>15),]
+
 shape_file <- det_bg
 mi_lodes_det_agg <- subs_lodes
 
@@ -79,7 +91,7 @@ det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
 mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is complete
 dim(mat)
 W.soc <- mat
-save(W.soc,file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc.Rdata")
+#save(W.soc,file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc.Rdata")
 
 ind <- NULL
 for(i in 1:nrow(mat)){
@@ -99,13 +111,18 @@ test2 <- neig(mat01 = mat)
 
 #now I would like to plot the social proximity
 coords <- coordinates(det_bg_soc)
-plot(shape_file, border = "gray",  main = "Social Proximity")
+plot(shape_file, border = "gray",  main = "Detroit Social Proximity") #700 x 600
 plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 #plot(na_dat, col= "red", density =50, border = "gray")
 
 summary(proxim_nb)
 summary(W.nb)
+
+#plot of geographic proximity
+coords <- coordinates(det_bg_geog)
+plot(shape_file, border = "gray",  main = "Detroit Geographic Proximity") #700 x 600
+plot(W.nb, coords, pch = 1, cex = 0.6, add = TRUE)
 
 ######################################################################################
 ##### Now, I will make a subset of the social proximity data, to make a clearer plot,
