@@ -80,13 +80,28 @@ moran.mc(x=resid.model, listw=W.list, nsim=1000)
 ####
 #### Geographic modeling
 ####
+seed_vec <- 1:800
+for(i in seed_vec){
+  print(paste(i, "********************"))
+  set.seed(i)
+  model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
+                             family="poisson", W=W_geog, burnin=20000, n.sample=150000, thin=10)
+  dic_geog <- model.bym.geog$modelfit[1]
+  perc_geog <- model.bym.geog$modelfit[7]
+  print(dic_geog)
+  print(perc_geog)
+  if(dic_geog > 7000 & perc_geog >0 & perc_geog<100){
+    print(paste("ALLLLLLLL DOOOOOOOOOOOOONEEEEE"), i)
+    break
+  }
+}
 W <- nb2mat(W.nb, style="B")
 rownames(W) <- NULL #need this for test if matrix is symmetric
-set.seed(123)
-model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=W_geog, burnin=20000, n.sample=120000, thin=10)
+set.seed(7697) # 124: 6773, 69    123: 4992, 78
 model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
-                              family="poisson", W=W_geog, burnin=20000, n.sample=120000, thin=10)
+                           family="poisson", W=W_geog, burnin=20000, n.sample=150000, thin=10)
+model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
+                             family="poisson", W=W_geog, burnin=20000, n.sample=150000, thin=10)
 sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W,
                          verbose = TRUE) #tune = list(sigma.s = 0.02)
 #save_geog_bym <- model.bym.geog
@@ -98,11 +113,11 @@ sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family =
 #### Social AND Geographic modeling
 ####
 rownames(bin_W) <- NULL #need this for test if matrix is symmetric
-set.seed(123)
+set.seed(7697) # 124: 7280, 66.7, 123: 7333, 69
 model.ler.soc <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=bin_W, burnin=20000, n.sample=120000, thin=10)
+                             family="poisson", W=bin_W, burnin=20000, n.sample=150000, thin=10)
 model.bym.soc <- S.CARbym(formula=form, data=det_bg_geog@data,
-                          family="poisson", W=bin_W, burnin=20000, n.sample=120000, thin=10)
+                          family="poisson", W=bin_W, burnin=20000, n.sample=150000, thin=10)
 sp.sglmm.fit.soc <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = bin_W,
                                  verbose = TRUE) #tune = list(sigma.s = 0.02)
 
@@ -208,7 +223,7 @@ model.bym.geog$summary.results[,1:3]
 # med_age       -0.0015 -0.0030 -0.0004
 # herf_index     0.7989  0.7704  0.8284
 
-summary(sp.sglmm.fit.geog)
+summary(sp.sglmm.fit.soc)
 # Estimate      Lower      Upper      MCSE
 # (Intercept)    1.859e+00  1.540e+00  2.151e+00 4.040e-03
 # median_income -2.563e-05 -2.812e-05 -2.289e-05 4.306e-08
@@ -218,7 +233,7 @@ summary(sp.sglmm.fit.geog)
 # med_age        8.395e-04 -2.326e-03  3.980e-03 1.635e-05
 # herf_index    -5.341e-01 -7.157e-01 -3.523e-01 1.710e-03
 
-model.bym.geog$summary.results[,1:3]
+model.ler.soc$summary.results[,1:3]
 # Median    2.5%   97.5%
 #   (Intercept)   -0.9985 -1.7473 -0.2400
 # median_income  0.0000  0.0000  0.0000
