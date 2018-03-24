@@ -8,3 +8,12 @@ src/00_CARBayes_vignette_code.R
 src/00_first_try_point_process_model.R
 output/murali_feedback.pdf
 literature/relevant_literature/*.pdf
+output/final_output/*/*.pdf
+output/final_output/*.pdf
+output/final_output/*/*.png
+output/final_output/*/*/*.png
+output/final_output/*/*/*.jpg
+output/final_output/*/*.jpg
+output/final_output/final/544_final_pres/2x2_grid.jpeg
+output/final_output/final/544_images/acs_image.jpeg
+output/final_output/progress_updates/10_31_progress_update.docx
