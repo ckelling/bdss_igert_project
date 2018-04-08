@@ -18,7 +18,7 @@ library(ggplot2)
 library(dplyr)
 library(ade4) 
 library(igraph) 
-
+library(scales)
 
 # Load data: 
 #   crime data
@@ -112,7 +112,7 @@ test2 <- neig(mat01 = mat)
 #now I would like to plot the social proximity
 coords <- coordinates(det_bg_soc)
 plot(shape_file, border = "gray",  main = "Detroit Social Proximity") #700 x 600
-plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE)
+plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE, col = alpha("navyblue", 0.3))
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 #plot(na_dat, col= "red", density =50, border = "gray")
 
@@ -120,9 +120,10 @@ summary(proxim_nb)
 summary(W.nb)
 
 #plot of geographic proximity
-coords <- coordinates(det_bg_geog)
+W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data)) 
+coords <- coordinates(det_bg)
 plot(shape_file, border = "gray",  main = "Detroit Geographic Proximity") #700 x 600
-plot(W.nb, coords, pch = 1, cex = 0.6, add = TRUE)
+plot(W.nb, coords, pch = 1, cex = 0.6, add = TRUE, col = alpha("navyblue", 0.3))
 
 ######################################################################################
 ##### Now, I will make a subset of the social proximity data, to make a clearer plot,
