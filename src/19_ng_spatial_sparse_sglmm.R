@@ -91,7 +91,7 @@ for(i in seed_vec){
   print(dic_geog)
   print(perc_geog)
   if(dic_geog > 7000 & perc_geog >0 & perc_geog<100){
-    print(paste("ALLLLLLLL DOOOOOOOOOOOOONEEEEE"), i)
+    print(paste("all done"), i)
     break
   }
 }
