@@ -10,7 +10,7 @@ library(sp)
 library(ggmap)
 library(tigris)
 library(readr)
-source("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert/src/shaby_point_ref_function.R")
+source("C:/Users/ckell/Desktop/Research/bdss_igert_project/src/shaby_point_ref_function.R")
 
 #load in data
 #detroit_data <- read_csv("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/original/Detroit_DPD__911_Calls_for_Service__September_20__2016_-_Present.csv")
@@ -25,7 +25,7 @@ source("C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert/src/shaby_point_r
 #save(detroit_data, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
 
 #load in subsetted data (data that has valid points for lat/long)
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/detroit_data.Rdata")
 
 
 #convert data to spatial points
