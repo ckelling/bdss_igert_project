@@ -22,15 +22,15 @@ library(scales)
 
 # Load data: 
 #   crime data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/full_crime_bg.Rdata")
 #   shape file
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
 #   social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 #   subsetted social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/subs_lodes.Rdata")
 
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 #need to decide cutoff value
 hist(mi_lodes_det_agg$S000)
 length(which(mi_lodes_det_agg$S000 > 15))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
@@ -91,7 +91,7 @@ det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
 mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is complete
 dim(mat)
 W.soc <- mat
-#save(W.soc,file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/W_soc.Rdata")
+#save(W.soc,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc.Rdata")
 
 ind <- NULL
 for(i in 1:nrow(mat)){
@@ -101,7 +101,7 @@ for(i in 1:nrow(mat)){
 }
 mat <- mat[-ind,-ind]
 det_bg_soc <- det_bg[-ind,]
-#save(det_bg_soc, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_soc.Rdata")
+#save(det_bg_soc, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_soc.Rdata")
 dim(mat)
 
 #create nb object
@@ -196,4 +196,4 @@ plot(det_bg, border = "gray", main = "Social Proximity \nNeighborhood Structure 
 plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
-#save(proxim_nb, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/proxim_nb.Rdata")
+#save(proxim_nb, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/proxim_nb.Rdata")
