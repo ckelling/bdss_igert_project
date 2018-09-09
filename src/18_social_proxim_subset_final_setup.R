@@ -22,15 +22,15 @@ library(igraph)
 
 # Load data: 
 #   crime data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/full_crime_bg.Rdata")
 #   shape file
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
 #   social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 #   subsetted social proximity lodes data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subs_lodes.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/subs_lodes.Rdata")
 #   subsetted crime data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 mi_lodes_det_agg <- subs_lodes
 full_dat <- agg_domv_dat_comp
 
@@ -162,4 +162,4 @@ plot(det_bg, border = "gray", main = "Social Proximity \nNeighborhood Structure 
 plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
-#save(proxim_nb, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/subset_soc_proxim_nb.Rdata")
+#save(proxim_nb, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/subset_soc_proxim_nb.Rdata")

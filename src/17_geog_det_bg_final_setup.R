@@ -20,9 +20,9 @@ library(pbapply)
 
 # Load data: 
 #   subsetted crime data
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 #   shape file
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Research/bdss_igert_project/data/working/det_bg.Rdata")
 shape_file <- det_bg
 
 #re-formatting to add the data to the SpatialPolygonsDataFrame
@@ -50,7 +50,7 @@ W.nb <- subset(W.nb, ind)
 #non-spatial modeling (just linear model)
 det_bg_geog <- det_bg[ind,]
 
-#save(det_bg_geog, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/det_bg_geog.Rdata")
+#save(det_bg_geog, file = "C:/Users/ckell/Desktop/Google Drive/Research/bdss_igert_project/data/working/det_bg_geog.Rdata")
 
 #create plot of W
 coords <- coordinates(det_bg_geog)
