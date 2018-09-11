@@ -10,12 +10,12 @@
 
 ## Output storage function:
 mod_out <- function(mod, sglmm){
-    if(sglmm = T){
-      dic <- sp.sglmm.fit.soc$dic
-      pd <- sp.sglmm.fit.soc$pD
+    if(sglmm == T){
+      dic <- mod$dic
+      pd <- mod$pD
     }else{
-      dic <- as.numeric(model.bym.geog$modelfit[1]) #dic
-      pd <- as.numeric(model.bym.geog$modelfit[7]) #pd
+      dic <- as.numeric(mod$modelfit[1]) #dic
+      pd <- as.numeric(mod$modelfit[7]) #pd
     }
   return(c(dic,pd))
 }
@@ -53,12 +53,13 @@ model_func <- function(W_m_geog, W_m_soc){
                                    verbose = TRUE) #tune = list(sigma.s = 0.02)
 
   
-  output <- cbind(c("BYM Geog", mod_out(model.bym.geog)),
-                  c("Ler Geog", mod_out(model.ler.geog)),
-                  c("SGLMM Geog", mod_out(sp.sglmm.fit.geog)),
-                  c("BYM Soc", mod_out(model.bym.soc)),
-                  c("Ler Soc", mod_out(model.ler.soc)),
-                  c("SGLMM Soc", mod_out(sp.sglmm.fit.soc)))
+  output <- cbind(c("BYM Geog", mod_out(model.bym.geog, sglmm = F)),
+                  c("Ler Geog", mod_out(model.ler.geog, sglmm = F)),
+                  c("SGLMM Geog", mod_out(sp.sglmm.fit.geog, sglmm = T)),
+                  c("BYM Soc", mod_out(model.bym.soc, sglmm = F)),
+                  c("Ler Soc", mod_out(model.ler.soc, sglmm = F)),
+                  c("SGLMM Soc", mod_out(sp.sglmm.fit.soc, sglmm = T)))
+  return(output)
   
 }
 
@@ -66,6 +67,7 @@ model_func <- function(W_m_geog, W_m_soc){
 W_geog_setup <- function(shapefile){
   W.nb <- poly2nb(shapefile, row.names = rownames(shapefile@data)) 
   W_geog <- nb2mat(W.nb, style="B")
+  return(W_geog)
 }
 
 
@@ -108,7 +110,7 @@ W_soc_setup <- function(subs_lodes){
   
   #I need to remove those entries such that there are no ACS information, in order for modeling to work
   det_bg$id <- row.names(det_bg)
-  det_bg@data <- left_join(det_bg@data, full_dat, by = (GEOID = "GEOID"))
+  det_bg@data <- left_join(det_bg@data, agg_domv_dat_comp, by = (GEOID = "GEOID"))
   no_acs <- which(is.na(det_bg$median_income))
   na_dat<- det_bg[which(is.na(det_bg$median_income)),]
   det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
@@ -118,4 +120,5 @@ W_soc_setup <- function(subs_lodes){
   mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is complete
   dim(mat)
   W.soc <- mat
+  return(W.soc)
 }
