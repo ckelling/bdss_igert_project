@@ -96,7 +96,7 @@ for(i in cut_vec){
   new_output <- model_func(W_geog, W_soc)
   
   #store the output
-  output <- cbind(rep(i, nrow(new_output)), new_output)
+  output <- rbind(output, cbind(rep(i, nrow(new_output)), new_output))
 }
 
 #save(output, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output.Rdata")
