@@ -84,6 +84,7 @@ form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
 for(i in cut_vec){
   #test case, comment out for full run
   #i <- 15
+  print(i)
   
   #subset the data for that cutoff
   subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>i),]
@@ -101,3 +102,4 @@ for(i in cut_vec){
 
 #save(output, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output.Rdata")
 save(output, file = "/storage/home/c/cek32/sens_output.Rdata")
+#save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output3.Rdata")
