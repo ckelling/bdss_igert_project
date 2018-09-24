@@ -17,7 +17,7 @@ mod_out <- function(mod, sglmm){
     }else{
       dic <- as.numeric(mod$modelfit[1]) #dic
       pd <- as.numeric(mod$modelfit[7]) #perc dev
-      waic <- as.numeric(mod$modelfit[7]) #waic
+      waic <- as.numeric(mod$modelfit[3]) #waic
     }
   return(c(dic,pd, waic))
 }
