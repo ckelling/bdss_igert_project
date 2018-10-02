@@ -101,5 +101,15 @@ for(i in cut_vec){
 }
 
 #save(output, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output.Rdata")
-save(output, file = "/storage/home/c/cek32/sens_output.Rdata")
+#save(output, file = "/storage/home/c/cek32/sens_output.Rdata")
 #save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output3.Rdata")
+
+
+#Analyze final output, cannot compare pD, only DIC between models
+load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
+
+#format and review table
+
+
+
+
