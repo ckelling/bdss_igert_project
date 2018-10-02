@@ -13,7 +13,7 @@ mod_out <- function(mod, sglmm){
     if(sglmm == T){
       dic <- mod$dic
       pd <- mod$pD #just number of effective parameters, not perc dev
-      waic <- NULL
+      waic <- NA
     }else{
       dic <- as.numeric(mod$modelfit[1]) #dic
       pd <- as.numeric(mod$modelfit[7]) #perc dev
