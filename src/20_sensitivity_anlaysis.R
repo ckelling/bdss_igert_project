@@ -20,6 +20,7 @@ library(CARBayes)
 library(ngspatial)
 library(pbapply)
 library(gridExtra)
+library(reshape)
 
 ####
 # Creating a cutoff for the LODES data
@@ -109,7 +110,25 @@ for(i in cut_vec){
 load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
 
 #format and review table
+### subset table to just include DIC for all models
+
+dic_out <- output[c(1,2,6,10,14,18),]
+dic_out <- as.data.frame(dic_out)
+dic_out <- dic_out[-1,]
+colnames(dic_out) <- c("cutoff", "BYM Geog", "Ler Geog", "SGLMM Geog", "BYM Soc", "Ler Soc", "SGLMM Soc")
+class(dic_out$cutoff)
+dic_out$cutoff <- as.numeric(as.character(dic_out$cutoff))
+dic_out$`BYM Geog` <- as.numeric(as.character(dic_out$`BYM Geog`))
+dic_out$`Ler Geog` <- as.numeric(as.character(dic_out$`Ler Geog`))
+dic_out$`SGLMM Geog` <- as.numeric(as.character(dic_out$`SGLMM Geog`))
+dic_out$`BYM Soc` <- as.numeric(as.character(dic_out$`BYM Soc`))
+dic_out$`Ler Soc` <- as.numeric(as.character(dic_out$`Ler Soc`))
+dic_out$`SGLMM Soc` <- as.numeric(as.character(dic_out$`SGLMM Soc`))
 
 
+plot_dat <- dic_out[,c(1,2,5)]
+plot_dat <- melt(dic_out[,c(1,2,5)], id = c("cutoff"))
+colnames(plot_dat) <- c("cutoff", "model", "dic")
 
+ggplot()+geom_line(data=plot_dat, aes(x=cutoff, y=dic, color=model))
 
