@@ -106,8 +106,9 @@ for(i in cut_vec){
 #save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output3.Rdata")
 
 #Also need to run the geographic analysis, where we just repeat the simulation many times for geographic (not social)
+geog_out <- NULL
 n_rep <- 10
-for(i in 1:10){
+for(i in 1:n_rep){
   #generate W_geog and W_soc
   W_geog <- W_geog_setup(det_bg_geog)
   
@@ -115,12 +116,18 @@ for(i in 1:10){
   new_output <- model_func(W_geog)
   
   #store the output
-  output <- rbind(output, cbind(rep(i, nrow(new_output)), new_output))
+  geog_out <- rbind(geog_out, cbind(rep(i, nrow(new_output)), new_output))
 }
+
+#save output
+#save(geog_out, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/geog_out.Rdata")
+
 
 #Analyze final output, cannot compare pD, only DIC between models
 load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
 #load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output4.Rdata")
+#load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/geog_out.Rdata")
+
 
 #format and review table
 ### subset table to just include DIC for all models, and format variables
