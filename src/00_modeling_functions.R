@@ -148,9 +148,9 @@ geog_func <- function(W_m_geog){
   sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W_m_geog,
                                     verbose = TRUE) #tune = list(sigma.s = 0.02)
   
-  output <- cbind(c("BYM Geog", mod_out(model.bym.geog, sglmm = F)),
-                  c("Ler Geog", mod_out(model.ler.geog, sglmm = F)),
-                  c("SGLMM Geog", mod_out(sp.sglmm.fit.geog, sglmm = T)))
+  output <- cbind(c("BYM Geog", dic_out(model.bym.geog, sglmm = F)),
+                  c("Ler Geog", dic_out(model.ler.geog, sglmm = F)),
+                  c("SGLMM Geog", dic_out(sp.sglmm.fit.geog, sglmm = T)))
   return(output)
   
 }
