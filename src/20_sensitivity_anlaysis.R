@@ -171,3 +171,9 @@ sglmm <- ggplot()+geom_line(data=sglmm_dat, aes(x=cutoff, y=dic, color=model))+l
 #With this plot, we will be able to see the variation in the performance of the Social model with respect to the cutoff,
 # and we can compare this to the mean of the simulations of the Geographic model (which does not vary with the cutoff)
 grid.arrange(bym, ler, sglmm, nrow = 1)
+
+#Should also report the standard deviation of the DIC for the models
+sd <- rep(NA,3)
+sd[1] <- sd(geog_out$`BYM Geog`)
+sd[2] <- sd(geog_out$`Ler Geog`)
+sd[3] <- sd(geog_out$`SGLMM Geog`)
