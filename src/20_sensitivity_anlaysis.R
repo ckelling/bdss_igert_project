@@ -105,18 +105,32 @@ for(i in cut_vec){
 #save(output, file = "/storage/home/c/cek32/sens_output.Rdata")
 #save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output3.Rdata")
 
+#Also need to run the geographic analysis, where we just repeat the simulation many times for geographic (not social)
+n_rep <- 10
+for(i in 1:10){
+  #generate W_geog and W_soc
+  W_geog <- W_geog_setup(det_bg_geog)
+  
+  #run all of the models for that subset and report output
+  new_output <- model_func(W_geog)
+  
+  #store the output
+  output <- rbind(output, cbind(rep(i, nrow(new_output)), new_output))
+}
 
 #Analyze final output, cannot compare pD, only DIC between models
 load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
+#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output4.Rdata")
 
 #format and review table
-### subset table to just include DIC for all models
-
+### subset table to just include DIC for all models, and format variables
 dic_out <- output[c(1,2,6,10,14,18),]
 dic_out <- as.data.frame(dic_out)
 dic_out <- dic_out[-1,]
 colnames(dic_out) <- c("cutoff", "BYM Geog", "Ler Geog", "SGLMM Geog", "BYM Soc", "Ler Soc", "SGLMM Soc")
 class(dic_out$cutoff)
+
+#sapply is not working with these factors, so just converting all of the variables to numerics
 dic_out$cutoff <- as.numeric(as.character(dic_out$cutoff))
 dic_out$`BYM Geog` <- as.numeric(as.character(dic_out$`BYM Geog`))
 dic_out$`Ler Geog` <- as.numeric(as.character(dic_out$`Ler Geog`))
@@ -125,22 +139,28 @@ dic_out$`BYM Soc` <- as.numeric(as.character(dic_out$`BYM Soc`))
 dic_out$`Ler Soc` <- as.numeric(as.character(dic_out$`Ler Soc`))
 dic_out$`SGLMM Soc` <- as.numeric(as.character(dic_out$`SGLMM Soc`))
 
+#inserting the average DIC from repeated simulation of BYM, Leroux, and SGLMM
+dic_out$`BYM Geog` <- rep(mean(geog_out$`BYM Geog`), nrow(dic_out))
+dic_out$`Ler Geog` <- rep(mean(geog_out$`Ler Geog`), nrow(dic_out))
+dic_out$`SGLMM Geog` <- rep(mean(geog_out$`SGLMM Geog`), nrow(dic_out))
 
+
+#BYM Plot
 bym_dat <- melt(dic_out[,c(1,2,5)], id = c("cutoff"))
 colnames(bym_dat) <- c("cutoff", "model", "dic")
-
 bym <- ggplot()+geom_line(data=bym_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "BYM Model", x= "Cutoff", y = "DIC")
 
-
+#Leroux Plot
 ler_dat <- melt(dic_out[,c(1,3,6)], id = c("cutoff"))
 colnames(ler_dat) <- c("cutoff", "model", "dic")
-
 ler <- ggplot()+geom_line(data=ler_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "Leroux Model", x= "Cutoff", y = "DIC")
 
-
+#SGLMM Plot
 sglmm_dat <- melt(dic_out[,c(1,4,7)], id = c("cutoff"))
 colnames(sglmm_dat) <- c("cutoff", "model", "dic")
-
 sglmm <- ggplot()+geom_line(data=sglmm_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "SGLMM Model", x= "Cutoff", y = "DIC")
 
+#Combine all the plots
+#With this plot, we will be able to see the variation in the performance of the Social model with respect to the cutoff,
+# and we can compare this to the mean of the simulations of the Geographic model (which does not vary with the cutoff)
 grid.arrange(bym, ler, sglmm, nrow = 1)
