@@ -126,9 +126,21 @@ dic_out$`Ler Soc` <- as.numeric(as.character(dic_out$`Ler Soc`))
 dic_out$`SGLMM Soc` <- as.numeric(as.character(dic_out$`SGLMM Soc`))
 
 
-plot_dat <- dic_out[,c(1,2,5)]
-plot_dat <- melt(dic_out[,c(1,2,5)], id = c("cutoff"))
-colnames(plot_dat) <- c("cutoff", "model", "dic")
+bym_dat <- melt(dic_out[,c(1,2,5)], id = c("cutoff"))
+colnames(bym_dat) <- c("cutoff", "model", "dic")
 
-ggplot()+geom_line(data=plot_dat, aes(x=cutoff, y=dic, color=model))
+bym <- ggplot()+geom_line(data=bym_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "BYM Model", x= "Cutoff", y = "DIC")
 
+
+ler_dat <- melt(dic_out[,c(1,3,6)], id = c("cutoff"))
+colnames(ler_dat) <- c("cutoff", "model", "dic")
+
+ler <- ggplot()+geom_line(data=ler_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "Leroux Model", x= "Cutoff", y = "DIC")
+
+
+sglmm_dat <- melt(dic_out[,c(1,4,7)], id = c("cutoff"))
+colnames(sglmm_dat) <- c("cutoff", "model", "dic")
+
+sglmm <- ggplot()+geom_line(data=sglmm_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "SGLMM Model", x= "Cutoff", y = "DIC")
+
+grid.arrange(bym, ler, sglmm, nrow = 1)
