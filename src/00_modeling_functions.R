@@ -136,7 +136,7 @@ dic_out <- function(mod, sglmm){
 
 
 #Run Geog Model several times, in order to generate average of the dic
-geog_func <- function(W_m_geog, W_m_soc){
+geog_func <- function(W_m_geog){
   ####
   #### Geographic modeling
   ####
