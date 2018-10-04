@@ -137,22 +137,14 @@ dic_out <- function(mod, sglmm){
 
 #Run Geog Model several times, in order to generate average of the dic
 geog_func <- function(W_m_geog, W_m_soc){
-  #############
-  ###  Combining adjacency matrices
-  #############
-  #addition
-  add_W <- W_m_geog + W_m_soc
-  #binary
-  bin_W <- ifelse(add_W == 2, 1, add_W)
-  
   ####
   #### Geographic modeling
   ####
   rownames(W_m_geog) <- NULL #need this for test if matrix is symmetric
   model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=W_m_geog, burnin=20000, n.sample=150000, thin=10)
+                             family="poisson", W=W_m_geog, burnin=20000, n.sample=200000, thin=10)
   model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                                family="poisson", W=W_m_geog, burnin=20000, n.sample=150000, thin=10)
+                                family="poisson", W=W_m_geog, burnin=20000, n.sample=200000, thin=10)
   sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W_m_geog,
                                     verbose = TRUE) #tune = list(sigma.s = 0.02)
   
