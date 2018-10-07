@@ -120,7 +120,7 @@ plot_domv <- as.data.frame(plot_domv)
 DetroitMap2 <- ggmap(get_map(location=c(-83.1,42.3528), zoom=11))
 DetroitMap2 + geom_point(aes(x = Longitude, y = Latitude), data = plot_domv, col = "blue", alpha =0.1)
 
-point_proc <- DetroitMap2  + geom_point(aes(x = Longitude, y = Latitude), data = plot_domv, col = "blue", alpha =0.1) + coord_equal() +
+point_proc <- DetroitMap2  + geom_point(aes(x = Longitude, y = Latitude), size = 3, data = plot_domv, col = "blue", alpha =0.1) + coord_equal() +
   ggtitle("Point Process, Crime Data")+
   theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
 
