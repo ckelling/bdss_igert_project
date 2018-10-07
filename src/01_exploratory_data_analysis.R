@@ -25,7 +25,7 @@ source("C:/Users/ckell/Desktop/Research/bdss_igert_project/src/shaby_point_ref_f
 #save(detroit_data, file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/detroit_data.Rdata")
 
 #load in subsetted data (data that has valid points for lat/long)
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/detroit_data.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crimebdss_igert_project/data/working/detroit_data.Rdata")
 
 
 #convert data to spatial points
