@@ -27,29 +27,29 @@ library(reshape)
 ### 
 
 # # Full shape file
-# load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
 # # Full LODES dataset
-# load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 # # Subsetted shape file for geographic proximity
-# load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog.Rdata")
 # #   subsetted crime data
-# load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 # 
 # # Source the file for setup and modeling functions
-# source(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/src/00_modeling_functions.R")
+ source(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/src/00_modeling_functions.R")
 
-
-#Directories for running on the cluster:
-load(file = "/storage/home/c/cek32/det_bg.Rdata")
-# Full LODES dataset
-load(file = "/storage/home/c/cek32/lodes_dat.Rdata")
-# Subsetted shape file for geographic proximity
-load(file = "/storage/home/c/cek32/det_bg_geog.Rdata")
-#   subsetted crime data
-load(file = "/storage/home/c/cek32/agg_domv_crime_dat.Rdata")
-
-# Source the file for setup and modeling functions
-source(file = "/storage/home/c/cek32/00_modeling_functions.R")
+# 
+# #Directories for running on the cluster:
+# load(file = "/storage/home/c/cek32/det_bg.Rdata")
+# # Full LODES dataset
+# load(file = "/storage/home/c/cek32/lodes_dat.Rdata")
+# # Subsetted shape file for geographic proximity
+# load(file = "/storage/home/c/cek32/det_bg_geog.Rdata")
+# #   subsetted crime data
+# load(file = "/storage/home/c/cek32/agg_domv_crime_dat.Rdata")
+# 
+# # Source the file for setup and modeling functions
+# source(file = "/storage/home/c/cek32/00_modeling_functions.R")
 
 
 
@@ -177,3 +177,7 @@ sd <- rep(NA,3)
 sd[1] <- sd(geog_out$`BYM Geog`)
 sd[2] <- sd(geog_out$`Ler Geog`)
 sd[3] <- sd(geog_out$`SGLMM Geog`)
+
+
+#how to find the number of samples for sglmm
+?sparse.sglmm
