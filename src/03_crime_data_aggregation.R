@@ -3,6 +3,7 @@
 ### Aggregation of Crime Data
 ###
 ### Created 11/01/17 for aggregation of crime points to areal units (census blocks)
+### Modified 10/06/18 for JQC
 ### 
 
 library(sp)
@@ -11,8 +12,8 @@ library(tigris)
 library(dplyr)
 
 #load in subsetted data- only data that has valid values for Lat/Long
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/detroit_data.Rdata")
-load(file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/working/acs_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/detroit_data.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/acs_dat.Rdata")
 
 
 #load in census block group spatial polygons
@@ -47,7 +48,6 @@ det_dat_ov <- det_dat_ov[,-c(31:37)]
 
 agg_dat <- plyr::count(det_dat_ov, c('GEOID'))
 agg_dat$GEOID <- as.factor(agg_dat$GEOID)
-
 
 #now I would like to create a plot that illustrates how many crimes are occuring per block groups
 num_per_bg <- as.numeric(agg_dat$freq)
@@ -97,6 +97,33 @@ domv_dat_detroit <- detroit_data[which(detroit_data$`Call Description` %in% domv
 coordinates(domv_dat_detroit) <- ~Longitude+Latitude
 proj4string(domv_dat_detroit) <- CRS("+proj=longlat")
 
+#
+# Plot the points for our dataset over Detroit
+#
+geocodeQueryCheck()
+key <- "AIzaSyAwyA61FavsSOqngadzhmwTNamrVquQ4tQ"
+key2 <- "AIzaSyAb7DhoebCR9sTXHDW94oYsgTVikPKyBME"
+
+register_google(key = key)
+
+if(!requireNamespace("devtools")) install.packages("devtools")
+devtools::install_github("dkahle/ggmap", ref = "tidyup")
+ggmap(get_googlemap("Detroit"))
+register_google(key = key)
+
+DetroitMap <- ggmap(get_map(location=c(-83.2392,42.3528), zoom=10))
+DetroitMap2 <- ggmap(get_map(location=c(-83.2392,42.3528), zoom=10))
+
+plot_domv <- detroit_data[which(detroit_data$`Call Description` %in% domv_codes),]
+plot_domv <- as.data.frame(plot_domv)
+
+DetroitMap2 <- ggmap(get_map(location=c(-83.1,42.3528), zoom=11))
+DetroitMap2 + geom_point(aes(x = Longitude, y = Latitude), data = plot_domv, col = "blue", alpha =0.1)
+
+point_proc <- DetroitMap2  + geom_point(aes(x = Longitude, y = Latitude), data = plot_domv, col = "blue", alpha =0.1) + coord_equal() +
+  ggtitle("Point Process, Crime Data")+
+  theme(text = element_text(size=30))+theme(axis.text.x=element_text(size=20))
+
 ##
 #Overlay the points, as above, except for domestic violence
 ##
@@ -141,5 +168,5 @@ agg_domv_dat2 <- left_join(acs_dat, agg_domv_dat, by = c(GEOID = "GEOID"))
 agg_domv_dat2$freq[which(is.na(agg_domv_dat2$freq))] <- 0
 agg_domv_dat_comp <- agg_domv_dat2[which(complete.cases(agg_domv_dat2)),] # 1706 out of 1822
 
-save(agg_domv_dat_comp, file = "C:/Users/ckell/Desktop/Research/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
+#save(agg_domv_dat_comp, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 
