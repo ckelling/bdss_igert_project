@@ -3,7 +3,7 @@
 ### Creating the sensitivity analysis for the commuting data.
 ###
 ### Created       9/7/18
-### Last Modified 9/9/18
+### Last Modified 10/8/18
 ### 
 
 # Packages:
@@ -81,7 +81,6 @@ output <- NULL
 #model form, including covariate information
 form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
 
-#started at 10/4, 9pm
 for(i in cut_vec){
   #test case, comment out for full run
   #i <- 15
