@@ -36,29 +36,29 @@ model_func <- function(W_geog, W_soc){
   ####
   #### Geographic modeling
   ####
-  rownames(W_geog) <- NULL #need this for test if matrix is symmetric
-  model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
-  model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                                family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
-  sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W_geog,
-                                    verbose = TRUE) #tune = list(sigma.s = 0.02)
+  # rownames(W_geog) <- NULL #need this for test if matrix is symmetric
+  # model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
+  #                            family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
+  # model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
+  #                               family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
+  # sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W_geog,
+  #                                   verbose = TRUE) #tune = list(sigma.s = 0.02)
   ####
   #### Social AND Geographic modeling
   ####
   rownames(bin_W) <- NULL #need this for test if matrix is symmetric
   model.bym.soc <- S.CARbym(formula=form, data=det_bg_geog@data,
-                            family="poisson", W=bin_W, burnin=20000, n.sample=2000000, thin=10)
+                            family="poisson", W=bin_W, burnin=2000, n.sample=152000, thin=1)
   model.ler.soc <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                               family="poisson", W=bin_W, burnin=20000, n.sample=2000000, thin=10)
+                               family="poisson", W=bin_W, burnin=2000, n.sample=152000, thin=1)
   sp.sglmm.fit.soc <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = bin_W,
-                                   verbose = TRUE) #tune = list(sigma.s = 0.02)
+                                   verbose = TRUE) #tune = list(sigma.s = 0.02) #does 1,000,000 samples
 
   
-  output <- cbind(c("BYM Geog", mod_out(model.bym.geog, sglmm = F)),
-                  c("Ler Geog", mod_out(model.ler.geog, sglmm = F)),
-                  c("SGLMM Geog", mod_out(sp.sglmm.fit.geog, sglmm = T)),
-                  c("BYM Soc", mod_out(model.bym.soc, sglmm = F)),
+    # output <- cbind(c("BYM Geog", mod_out(model.bym.geog, sglmm = F)),
+  #                 c("Ler Geog", mod_out(model.ler.geog, sglmm = F)),
+  #                 c("SGLMM Geog", mod_out(sp.sglmm.fit.geog, sglmm = T)))#,
+  output <- cbind(c("BYM Soc", mod_out(model.bym.soc, sglmm = F)),
                   c("Ler Soc", mod_out(model.ler.soc, sglmm = F)),
                   c("SGLMM Soc", mod_out(sp.sglmm.fit.soc, sglmm = T)))
   return(output)
@@ -142,9 +142,9 @@ geog_func <- function(W_geog){
   ####
   rownames(W_geog) <- NULL #need this for test if matrix is symmetric
   model.bym.geog <- S.CARbym(formula=form, data=det_bg_geog@data,
-                             family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
+                             family="poisson", W=W_geog, burnin=2000, n.sample=152000, thin=1)
   model.ler.geog <- S.CARleroux(formula=form, data=det_bg_geog@data,
-                                family="poisson", W=W_geog, burnin=20000, n.sample=2000000, thin=10)
+                                family="poisson", W=W_geog, burnin=2000, n.sample=152000, thin=1)
   sp.sglmm.fit.geog <- sparse.sglmm(formula = form,data=det_bg_geog@data, family = poisson, A = W_geog,
                                     verbose = TRUE) #tune = list(sigma.s = 0.02)
   
