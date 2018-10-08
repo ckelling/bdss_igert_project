@@ -81,7 +81,7 @@ output <- NULL
 #model form, including covariate information
 form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
 
-
+#started at 10/4, 9pm
 for(i in cut_vec){
   #test case, comment out for full run
   #i <- 15
@@ -103,7 +103,7 @@ for(i in cut_vec){
 
 #save(output, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output.Rdata")
 #save(output, file = "/storage/home/c/cek32/sens_output.Rdata")
-#save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output3.Rdata")
+save(output, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/sens_output.Rdata")
 
 #Also need to run the geographic analysis, where we just repeat the simulation many times for geographic (not social)
 geog_out <- NULL
@@ -113,20 +113,22 @@ for(i in 1:n_rep){
   W_geog <- W_geog_setup(det_bg_geog)
   
   #run all of the models for that subset and report output
-  new_output <- model_func(W_geog)
+  new_output <- geog_func(W_geog)
   
   #store the output
   geog_out <- rbind(geog_out, cbind(rep(i, nrow(new_output)), new_output))
 }
 
 #save output
-#save(geog_out, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/geog_out.Rdata")
+save(geog_out, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/Claire/geog_out.Rdata")
 
 
 #Analyze final output, cannot compare pD, only DIC between models
-load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
+#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
 #load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output4.Rdata")
 #load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/geog_out.Rdata")
+load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_sens_output.Rdata")
+load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_geog_out.Rdata")
 
 
 #format and review table
@@ -134,50 +136,55 @@ load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crim
 dic_out <- output[c(1,2,6,10,14,18),]
 dic_out <- as.data.frame(dic_out)
 dic_out <- dic_out[-1,]
-colnames(dic_out) <- c("cutoff", "BYM Geog", "Ler Geog", "SGLMM Geog", "BYM Soc", "Ler Soc", "SGLMM Soc")
-class(dic_out$cutoff)
+#"BYM Geog", "Ler Geog", "SGLMM Geog"
+colnames(dic_out) <- c("cutoff","BYM Soc", "Ler Soc", "SGLMM Soc")
+
+#need to also format our repeated results for geog_out
+geog_out <- geog_out[c(2,4,6,8,10,12,14,16,18,20),c(2,3,4)]
+geog_out <- as.data.frame(geog_out)
+colnames(geog_out) <- c("BYM Geog", "Ler Geog", "SGLMM Geog")
 
 #sapply is not working with these factors, so just converting all of the variables to numerics
 dic_out$cutoff <- as.numeric(as.character(dic_out$cutoff))
-dic_out$`BYM Geog` <- as.numeric(as.character(dic_out$`BYM Geog`))
-dic_out$`Ler Geog` <- as.numeric(as.character(dic_out$`Ler Geog`))
-dic_out$`SGLMM Geog` <- as.numeric(as.character(dic_out$`SGLMM Geog`))
+geog_out$`BYM Geog` <- as.numeric(as.character(geog_out$`BYM Geog`))
+geog_out$`Ler Geog` <- as.numeric(as.character(geog_out$`Ler Geog`))
+geog_out$`SGLMM Geog` <- as.numeric(as.character(geog_out$`SGLMM Geog`))
 dic_out$`BYM Soc` <- as.numeric(as.character(dic_out$`BYM Soc`))
 dic_out$`Ler Soc` <- as.numeric(as.character(dic_out$`Ler Soc`))
 dic_out$`SGLMM Soc` <- as.numeric(as.character(dic_out$`SGLMM Soc`))
 
+geog_out$`BYM Geog`[which(geog_out$`BYM Geog` < 0)] <- NA
+
 #inserting the average DIC from repeated simulation of BYM, Leroux, and SGLMM
-dic_out$`BYM Geog` <- rep(mean(geog_out$`BYM Geog`), nrow(dic_out))
-dic_out$`Ler Geog` <- rep(mean(geog_out$`Ler Geog`), nrow(dic_out))
-dic_out$`SGLMM Geog` <- rep(mean(geog_out$`SGLMM Geog`), nrow(dic_out))
+dic_out$`BYM Geog` <- rep(mean(geog_out$`BYM Geog`, na.rm =T), nrow(dic_out))
+dic_out$`Ler Geog` <- rep(mean(geog_out$`Ler Geog`, na.rm =T), nrow(dic_out))
+dic_out$`SGLMM Geog` <- rep(mean(geog_out$`SGLMM Geog`, na.rm = T), nrow(dic_out))
 
 
 #BYM Plot
 bym_dat <- melt(dic_out[,c(1,2,5)], id = c("cutoff"))
 colnames(bym_dat) <- c("cutoff", "model", "dic")
-bym <- ggplot()+geom_line(data=bym_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "BYM Model", x= "Cutoff", y = "DIC")
+bym <- ggplot()+geom_line(data=bym_dat, aes(x=cutoff, y=dic, color=model), size = 2)+labs(title = "BYM Model", x= "Cutoff", y = "DIC")
 
 #Leroux Plot
 ler_dat <- melt(dic_out[,c(1,3,6)], id = c("cutoff"))
 colnames(ler_dat) <- c("cutoff", "model", "dic")
-ler <- ggplot()+geom_line(data=ler_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "Leroux Model", x= "Cutoff", y = "DIC")
+ler <- ggplot()+geom_line(data=ler_dat, aes(x=cutoff, y=dic, color=model), size =2)+labs(title = "Leroux Model", x= "Cutoff", y = "DIC")
 
 #SGLMM Plot
 sglmm_dat <- melt(dic_out[,c(1,4,7)], id = c("cutoff"))
 colnames(sglmm_dat) <- c("cutoff", "model", "dic")
-sglmm <- ggplot()+geom_line(data=sglmm_dat, aes(x=cutoff, y=dic, color=model))+labs(title = "SGLMM Model", x= "Cutoff", y = "DIC")
+sglmm <- ggplot()+geom_line(data=sglmm_dat, aes(x=cutoff, y=dic, color=model), size =2)+labs(title = "SGLMM Model", x= "Cutoff", y = "DIC")
 
 #Combine all the plots
 #With this plot, we will be able to see the variation in the performance of the Social model with respect to the cutoff,
 # and we can compare this to the mean of the simulations of the Geographic model (which does not vary with the cutoff)
 grid.arrange(bym, ler, sglmm, nrow = 1)
+#save as 1200x300
 
 #Should also report the standard deviation of the DIC for the models
-sd <- rep(NA,3)
-sd[1] <- sd(geog_out$`BYM Geog`)
-sd[2] <- sd(geog_out$`Ler Geog`)
-sd[3] <- sd(geog_out$`SGLMM Geog`)
-
-
-#how to find the number of samples for sglmm
-?sparse.sglmm
+se <- rep(NA,3)
+se[1] <- sd(geog_out$`BYM Geog`, na.rm=T)/sqrt(10)
+se[2] <- sd(geog_out$`Ler Geog`)/sqrt(10)
+se[3] <- sd(geog_out$`SGLMM Geog`)/sqrt(10)
+se
