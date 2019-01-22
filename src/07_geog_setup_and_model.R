@@ -17,16 +17,34 @@ library(ggplot2)
 library(dplyr)
 library(ade4) 
 library(igraph) 
+library(rgdal)
 
 
 # Load data: 
 #   crime data
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/final/full_crime_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/full_crime_bg.Rdata")
 #   shape file
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/det_bg.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
 #   social proximity lodes data
-load(file = "C:/Users/ckell/OneDrive/Penn State/Research/bdss_igert_project/data/working/lodes_dat.Rdata")
+load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 
+###
+### Subset to Detroit City (not Wayne County)
+###
+#  Load the city boundaries file
+det_city <- readOGR(dsn="C:/Users/ckell/Desktop/Google Drive/Box Sync/SODA 502 project - 311/City of Detroit Boundary Shapefile", layer="det_city")
+det_city <- spTransform(det_city, proj4string(det_bg))
+
+#####
+## Aggregate by block group for plotting
+#####
+city_bg <- det_bg[det_city,]
+plot(det_bg)
+plot(city_bg, col = "red", add = TRUE)
+plot(city_bg)
+
+#perform analysis only on detroit city
+det_bg <- city_bg
 
 #re-formatting to add the data to the SpatialPolygonsDataFrame
 det_bg$id <- row.names(det_bg)
@@ -70,3 +88,7 @@ mod.car <- spautolm(crime_freq ~ median_income + upemp_rate+perc_male+med_age+he
 mod.car <- spautolm(crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index, 
                     data = det_bg, listw = crime_listw, family = "CAR")
 summary(mod.car)
+
+
+
+
