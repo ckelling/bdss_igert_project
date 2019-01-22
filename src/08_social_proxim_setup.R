@@ -105,7 +105,13 @@ det_bg <- det_bg[-which(is.na(det_bg$median_income)),]
 mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is complete
 dim(mat)
 W.soc <- mat
+W.soc.10 <- mat
 #save(W.soc,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc.Rdata")
+#save(W.soc,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_final.Rdata")
+save(W.soc.10,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_10.Rdata")
+det_bg_geog <- det_bg
+save(det_bg_geog, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog_final.Rdata")
+
 
 ind <- NULL
 for(i in 1:nrow(mat)){
@@ -114,30 +120,33 @@ for(i in 1:nrow(mat)){
   }
 }
 mat <- mat[-ind,-ind]
-det_bg_soc <- det_bg#[-ind,]  # include if there are block groups with 0 ties
+det_bg_soc <- det_bg[-ind,]  # include if there are block groups with 0 ties
 #save(det_bg_soc, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_soc.Rdata")
 dim(mat)
 
 #create nb object
 proxim_nb <- neig2nb(neig(mat01 = mat))
+save(proxim_nb, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/proxim_nb_final.Rdata")
 test2 <- neig(mat01 = mat)
 
 
 #now I would like to plot the social proximity
 coords <- coordinates(det_bg_soc)
-plot(shape_file, border = "gray",  main = "Detroit Social Proximity") #700 x 600
+plot(shape_file, border = "gray",  main = "Detroit Social Proximity") #700 x 600, save at 1400x1200 for better resolution
 plot(proxim_nb, coords, pch = 1, cex = 0.6, add = TRUE, col = alpha("navyblue", 0.3))
-plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
+#plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 #plot(na_dat, col= "red", density =50, border = "gray")
 
 summary(proxim_nb)
-summary(W.nb)
 
 #plot of geographic proximity
 W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data))
 coords <- coordinates(det_bg)
 plot(shape_file, border = "gray",  main = "Detroit Geographic Proximity") #700 x 600
 plot(W.nb, coords, pch = 1, cex = 0.6, add = TRUE, col = alpha("navyblue", 0.3))
+summary(W.nb)
+
+save(W.soc, )
 
 ######################################################################################
 ##### Now, I will make a subset of the social proximity data, to make a clearer plot,
@@ -211,4 +220,5 @@ plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
 #save(proxim_nb, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/proxim_nb.Rdata")
-
+det_bg <- city_bg
+save(det_bg, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_final.Rdata")
