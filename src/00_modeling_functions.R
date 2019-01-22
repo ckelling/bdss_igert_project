@@ -4,7 +4,7 @@
 ### Includes functions for the modeling procedure and storage of output.
 ###
 ### Created       9/9/18
-### Last Modified 9/9/18
+### Last Modified 1/22/19
 ### 
 
 
@@ -81,7 +81,7 @@ W_soc_setup <- function(subs_lodes){
   
   # I need to rescale the block groups so that their ID's are not so large
   bg_dat <- det_bg@data
-  new_geoid <- cbind(1:1822,bg_dat$GEOID)
+  new_geoid <- cbind(1:length(det_bg),bg_dat$GEOID)
   new_geoid[,1] <- as.numeric(new_geoid[,1])
   new_geoid[,2] <- as.numeric(new_geoid[,2])
   
@@ -95,7 +95,7 @@ W_soc_setup <- function(subs_lodes){
   new_el[,1] <- as.integer(new_el[,1])
   new_el[,2] <- as.integer(new_el[,2])
   
-  mat <- matrix(0, 1822, 1822)
+  mat <- matrix(0, length(det_bg), length(det_bg))
   mat[new_el] <- 1
   sum(mat)
   
