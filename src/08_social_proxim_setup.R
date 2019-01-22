@@ -3,7 +3,7 @@
 ### Social Proximity Setup
 ###
 ### Created 11/29/17 for preliminary social proximity setup and modeling
-### 
+###
 
 
 # I will begin by attempting to model the crime spatially.
@@ -16,11 +16,12 @@ library(classInt)
 library(fields)
 library(ggplot2)
 library(dplyr)
-library(ade4) 
-library(igraph) 
+library(ade4)
+library(igraph)
 library(scales)
+library(rgdal)
 
-# Load data: 
+# Load data:
 #   crime data
 load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/full_crime_bg.Rdata")
 #   shape file
@@ -37,9 +38,22 @@ length(which(mi_lodes_det_agg$S000 > 15))/nrow(mi_lodes_det_agg) #only 30% of th
 #However, this is still 65,803 network ties
 
 ###
+### Subset to Detroit City (not Wayne County)
+###
+#  Load the city boundaries file
+det_city <- readOGR(dsn="C:/Users/ckell/Desktop/Google Drive/Box Sync/SODA 502 project - 311/City of Detroit Boundary Shapefile", layer="det_city")
+det_city <- spTransform(det_city, proj4string(det_bg))
+
+city_bg <- det_bg[det_city,]
+det_bg <- city_bg
+
+# Only use lodes data for block groups that are in the city
+mi_lodes_det_agg <- mi_lodes_det_agg[which(mi_lodes_det_agg$w_geocode %in% city_bg$GEOID & mi_lodes_det_agg$h_geocode %in% city_bg$GEOID),]
+
+###
 # For now, I will use this as my cutoff to create meaningful social proximity links
 ###
-subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>15),]
+subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>10),]
 
 shape_file <- det_bg
 mi_lodes_det_agg <- subs_lodes
@@ -50,21 +64,21 @@ edgelist <- as.matrix(edgelist)
 
 # I need to rescale the block groups so that their ID's are not so large
 bg_dat <- det_bg@data
-new_geoid <- cbind(1:1822,bg_dat$GEOID)
+new_geoid <- cbind(1:length(city_bg),bg_dat$GEOID)
 new_geoid[,1] <- as.numeric(new_geoid[,1])
 new_geoid[,2] <- as.numeric(new_geoid[,2])
 
 new_el <- matrix(NA,nrow = nrow(edgelist),ncol = ncol(edgelist))
 
 for(i in 1:nrow(edgelist)){
-    new_el[i,1] <- as.numeric(new_geoid[which(edgelist[i,1] == new_geoid[,2]),1])
-    new_el[i,2] <- as.numeric(new_geoid[which(edgelist[i,2] == new_geoid[,2]),1])
+  new_el[i,1] <- as.numeric(new_geoid[which(edgelist[i,1] == new_geoid[,2]),1])
+  new_el[i,2] <- as.numeric(new_geoid[which(edgelist[i,2] == new_geoid[,2]),1])
 }
 
 new_el[,1] <- as.integer(new_el[,1])
 new_el[,2] <- as.integer(new_el[,2])
 
-mat <- matrix(0, 1822, 1822)
+mat <- matrix(0, length(det_bg), length(det_bg))
 mat[new_el] <- 1
 sum(mat)
 
@@ -100,7 +114,7 @@ for(i in 1:nrow(mat)){
   }
 }
 mat <- mat[-ind,-ind]
-det_bg_soc <- det_bg[-ind,]
+det_bg_soc <- det_bg#[-ind,]  # include if there are block groups with 0 ties
 #save(det_bg_soc, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_soc.Rdata")
 dim(mat)
 
@@ -120,7 +134,7 @@ summary(proxim_nb)
 summary(W.nb)
 
 #plot of geographic proximity
-W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data)) 
+W.nb <- poly2nb(det_bg, row.names = rownames(det_bg@data))
 coords <- coordinates(det_bg)
 plot(shape_file, border = "gray",  main = "Detroit Geographic Proximity") #700 x 600
 plot(W.nb, coords, pch = 1, cex = 0.6, add = TRUE, col = alpha("navyblue", 0.3))
@@ -139,7 +153,7 @@ rem <- c()
 for(i in 1:nrow(edgelist)){
   if(i %% 1000 ==0){
     print(i)
-    }
+  }
   if(edgelist[i,1] %in% na_dat$GEOID){
     rem <- c(rem,i)
     #edgelist <- edgelist[-i,]
@@ -197,3 +211,4 @@ plot(proxim_nb2, coords, pch = 1, cex = 0.6, add = TRUE)
 plot(na_dat, col= "red", density =50,add = TRUE, border = "gray")
 
 #save(proxim_nb, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/proxim_nb.Rdata")
+
