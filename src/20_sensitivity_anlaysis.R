@@ -3,7 +3,7 @@
 ### Creating the sensitivity analysis for the commuting data.
 ###
 ### Created       9/7/18
-### Last Modified 10/8/18
+### Last Modified 1/22/19
 ### 
 
 # Packages:
@@ -27,11 +27,11 @@ library(reshape)
 ### 
 
 # # Full shape file
- load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_final.Rdata")
 # # Full LODES dataset
  load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 # # Subsetted shape file for geographic proximity
- load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog.Rdata")
+ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog_final.Rdata")
 # #   subsetted crime data
  load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/agg_domv_crime_dat.Rdata")
 # 
@@ -51,22 +51,24 @@ library(reshape)
 # # Source the file for setup and modeling functions
 # source(file = "/storage/home/c/cek32/00_modeling_functions.R")
 
-
+# Only use lodes data for block groups that are in the city
+mi_lodes_det_agg <- mi_lodes_det_agg[which(mi_lodes_det_agg$w_geocode %in% det_bg$GEOID & mi_lodes_det_agg$h_geocode %in% det_bg$GEOID),]
+ 
 
 #need to decide cutoff values
 hist(mi_lodes_det_agg$S000)
 
 #Exploratory Work:
-length(which(mi_lodes_det_agg$S000 > 1))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
+length(which(mi_lodes_det_agg$S000 > 15))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
 #However, this is still 65,803 network ties
 # Approximately 1% have a value greater than 15. 
 
 #cutoff | percent above cutoff
-# 1     | 34.2%
-# 3     | 11.5%
-# 5     | 6%
-# 10    | 2%
-# 15    | 0.9%
+# 1     | 32.9%
+# 3     | 10.9%
+# 5     | 5.9%
+# 10    | 2.0%
+# 15    | 0.8%
 
 ###
 # Now I need to create the storage to try different cutoffs 
@@ -79,7 +81,7 @@ cut_vec <- c(1,3,5,10,15)
 output <- NULL
 
 #model form, including covariate information
-form <- freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
+form <- crime_freq ~ median_income + upemp_rate+total_pop+perc_male+med_age+herf_index
 
 for(i in cut_vec){
   #test case, comment out for full run
