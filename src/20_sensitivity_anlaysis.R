@@ -125,12 +125,10 @@ save(geog_out, file = "C:/Users/Brian/Desktop/Google Drive/Drive Sync/Documents/
 
 
 #Analyze final output, cannot compare pD, only DIC between models
-#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output3.Rdata")
-#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_output4.Rdata")
-#load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/geog_out.Rdata")
-load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_sens_output.Rdata")
-load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_geog_out.Rdata")
-
+#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_sens_output.Rdata")
+#load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/f_geog_out.Rdata")
+load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_final/final_sens_output.Rdata")
+load("C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/sens_final/final_geog_out.Rdata")
 
 #format and review table
 ### subset table to just include DIC for all models, and format variables
@@ -153,8 +151,6 @@ geog_out$`SGLMM Geog` <- as.numeric(as.character(geog_out$`SGLMM Geog`))
 dic_out$`BYM Soc` <- as.numeric(as.character(dic_out$`BYM Soc`))
 dic_out$`Ler Soc` <- as.numeric(as.character(dic_out$`Ler Soc`))
 dic_out$`SGLMM Soc` <- as.numeric(as.character(dic_out$`SGLMM Soc`))
-
-geog_out$`BYM Geog`[which(geog_out$`BYM Geog` < 0)] <- NA
 
 #inserting the average DIC from repeated simulation of BYM, Leroux, and SGLMM
 dic_out$`BYM Geog` <- rep(mean(geog_out$`BYM Geog`, na.rm =T), nrow(dic_out))
