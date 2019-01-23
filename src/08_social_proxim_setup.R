@@ -34,7 +34,7 @@ load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_gro
 load(file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/lodes_dat.Rdata")
 #need to decide cutoff value
 hist(mi_lodes_det_agg$S000)
-length(which(mi_lodes_det_agg$S000 > 15))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
+length(which(mi_lodes_det_agg$S000 > 3))/nrow(mi_lodes_det_agg) #only 30% of the data has a value greater than 1
 #However, this is still 65,803 network ties
 
 ###
@@ -53,7 +53,7 @@ mi_lodes_det_agg <- mi_lodes_det_agg[which(mi_lodes_det_agg$w_geocode %in% city_
 ###
 # For now, I will use this as my cutoff to create meaningful social proximity links
 ###
-subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>10),]
+subs_lodes <- mi_lodes_det_agg[which(mi_lodes_det_agg$S000>3),]
 
 shape_file <- det_bg
 mi_lodes_det_agg <- subs_lodes
@@ -106,9 +106,12 @@ mat <- mat[-no_acs,-no_acs] #this is my new adjacency matrix where all info is c
 dim(mat)
 W.soc <- mat
 W.soc.10 <- mat
+W.soc.3 <- mat
 #save(W.soc,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc.Rdata")
 #save(W.soc,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_final.Rdata")
-save(W.soc.10,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_10.Rdata")
+#save(W.soc.10,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_10.Rdata")
+save(W.soc.3,file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/final/W_soc_3.Rdata")
+
 det_bg_geog <- det_bg
 save(det_bg_geog, file = "C:/Users/ckell/Desktop/Google Drive/Box Sync/claire_murali_sesa_group/crime/bdss_igert_project/data/working/det_bg_geog_final.Rdata")
 
