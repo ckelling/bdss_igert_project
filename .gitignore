@@ -24,7 +24,6 @@ output/final_output/final/544_images/acs_image.jpeg
 output/final_output/progress_updates/10_31_progress_update.docx
 output/final_output/wsds_2018_abstract.docx
 output/kelling_igert_poster.pdf
-src/19_ng_spatial_sparse_sglmm.R
 review_edits/review_comments.pdf
 output/combining-geographic-social.pdf
 src/19_ng_spatial_sparse_sglmm (1).R
@@ -40,3 +39,4 @@ jqc_submission/updated_author_requirements.pdf
 literature/lee2011_comparison.pdf
 output/ASA_submission_Geographic_and_Social_Proximity.pdf
 jqc_submission/draft_all_figures_comments/*
+src/2_26_version/*
